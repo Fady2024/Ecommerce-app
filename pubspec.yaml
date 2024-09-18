@@ -1,0 +1,93 @@
+name: loginpage
+description: "A new Flutter project."
+publish_to: 'none' # Prevents accidental publication to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core:
+  cloud_firestore: # Specify the version you need
+  provider: ^6.1.2
+  firebase_auth:
+  google_sign_in: ^6.2.1
+  auth_buttons: ^3.0.0
+  image_picker:
+
+  # State management and utility libraries
+  rx_shared_preferences: ^3.1.0
+  disposebag: ^1.5.1
+  flutter_disposebag: ^1.1.0
+  flutter_bloc_pattern: ^2.3.0
+  rxdart_ext: ^0.2.7
+  did_change_dependencies: ^1.0.0
+  stream_loader: ^1.5.0
+  dart_either: ^1.0.0
+  http_client_hoc081098: ^0.0.1-dev.0
+  cancellation_token_hoc081098: ^1.0.0
+  firebase_storage: ^11.6.0
+  get: ^4.6.6
+  email_validator: ^3.0.0
+  bloc: ^8.0.0
+  circular_bottom_navigation: ^2.4.0
+  motion_tab_bar: ^2.0.4
+  flutter_bloc: ^8.1.6
+  flutter_rating_bar: ^4.0.1
+  path_provider: ^2.1.4
+  shared_preferences: ^2.3.2
+  sqflite: ^2.3.3+1
+  anim_search_bar: ^2.0.3
+  material_floating_search_bar_2: ^0.5.0
+  sidebarx: ^0.17.1
+  sidebar_drawer: ^0.0.1+2
+  intl: ^0.19.0
+  firebase_database: ^10.4.0
+  webview_flutter: ^4.9.0
+  flutter_web_browser: ^0.14.0
+  lottie: ^3.0.0
+  flutter_hooks: ^0.20.5
+  flutter_carousel_widget: ^2.3.0
+  carousel_slider: ^5.0.0
+  dio: ^5.6.0
+  cached_network_image: ^3.3.1
+dev_dependencies:
+  plugin_platform_interface: ^2.1.3
+  flutter_launcher_icons: "^0.13.1"
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/Untitled-1.png"
+  android_icon_name: "AFK Market" # Optional, specify if you want a custom name
+  ios_icon_name: "AFK Market" # Optional, specify if you want a custom name
+  adaptive_icon_background: "#19160e"
+  adaptive_icon_foreground: "assets/playstore-icon.png"
+
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.3.2
+  built_value_generator: ^8.4.2
+  analyzer: ^5.2.0
+  flutter_lints: ^2.0.1
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - fonts/
+    - devs/
+    - lib/data/
+
+
+  #fonts:
+  # Example font configuration
+  # - family: Schyler
+  #   fonts:
+  #     - asset: fonts/Schyler-Regular.ttf
+  #     - asset: fonts/Schyler-Italic.ttf
+  #       style: italic
