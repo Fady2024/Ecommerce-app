@@ -8,6 +8,7 @@ import '../cubits/favorite_and_cart_cubit_management.dart';
 import '../cubits/favorites_and_cart_state_manager.dart';
 import '../data/product.dart';
 import '../main.dart';
+import 'dart:async';
 import 'product_details_pages/PriceSection.dart';
 import 'product_details_pages/ReviewWidget.dart';
 import 'product_details_pages/product_detail_header.dart';
@@ -27,22 +28,26 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final _commentController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  double _rating = 3.0; // Default rating
+  double _rating = 5.0; // Default rating
 
-  final DatabaseReference _commentsRef = FirebaseDatabase.instance.ref('comments');
+  late final DatabaseReference _commentsRef;
+  StreamSubscription<DatabaseEvent>? _commentsSubscription;
   List<Map<String, dynamic>> _comments = [];
 
   @override
   void initState() {
     super.initState();
-    _loadComments();
+    _commentsRef = FirebaseDatabase.instance.ref('comments');
+    _subscribeToComments();
   }
 
-  Future<void> _loadComments() async {
-    try {
-      final commentsRef = FirebaseDatabase.instance.ref('comments');
-      final snapshot = await commentsRef.orderByChild('productId').equalTo(widget.product.id).get();
-
+  void _subscribeToComments() {
+    _commentsSubscription = _commentsRef
+        .orderByChild('productId')
+        .equalTo(widget.product.id)
+        .onValue
+        .listen((event) {
+      final snapshot = event.snapshot;
       if (snapshot.exists) {
         final commentsList = snapshot.children.map((child) {
           final commentData = child.value as Map<Object?, Object?>;
@@ -63,15 +68,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           _comments = []; // No comments found
         });
       }
-    } catch (e) {
-      print('Error loading comments: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to load comments.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    });
+  }
+
+  @override
+  void dispose() {
+    _commentsSubscription?.cancel();
+    super.dispose();
   }
 
   void _addToCart(Product product) {
@@ -178,7 +181,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       _emailController.clear();
       setState(() {
         _rating = 3.0;
-        _loadComments(); // Refresh the comment list
+        // No need to call _loadComments() as we're already listening to updates
       });
     } catch (e) {
       print('Error submitting comment: $e');
@@ -293,9 +296,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 TextField(
                   controller: _emailController,
                   decoration: const InputDecoration(
@@ -339,7 +340,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   onPressed: _submitComment,
                   child: const Text('Submit Comment'),
                 ),
-
               ],
             ),
           );

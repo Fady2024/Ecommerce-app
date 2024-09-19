@@ -28,37 +28,10 @@ class _ReviewWidgetState extends State<ReviewWidget> {
   final _nameController = TextEditingController();
   bool _isReplying = false;
   bool _showReplies = false;
-  List<Map<String, dynamic>> _replies = [];
 
   String _formatDate(DateTime date) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd h:mm a');
     return formatter.format(date);
-  }
-
-  Future<void> _loadReplies() async {
-    try {
-      final repliesSnapshot = await _repliesRef
-          .orderByChild('comment')
-          .equalTo(widget.review.comment)
-          .get();
-
-      if (repliesSnapshot.exists) {
-        final repliesList = repliesSnapshot.children.map((child) {
-          final replyData = child.value as Map<Object?, Object?>;
-          return {
-            'name': replyData['name'] as String?,
-            'reply': replyData['reply'] as String?,
-            'timestamp': replyData['timestamp'] as String?,
-          };
-        }).toList();
-
-        setState(() {
-          _replies = repliesList;
-        });
-      }
-    } catch (e) {
-      print('Error loading replies: $e');
-    }
   }
 
   Future<void> _submitReply() async {
@@ -98,7 +71,6 @@ class _ReviewWidgetState extends State<ReviewWidget> {
       _nameController.clear();
       setState(() {
         _isReplying = false;
-        _loadReplies(); // Refresh replies list
       });
     } catch (e) {
       print('Error submitting reply: $e');
@@ -109,12 +81,6 @@ class _ReviewWidgetState extends State<ReviewWidget> {
         ),
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadReplies();
   }
 
   @override
@@ -187,11 +153,10 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                   ),
                   Text(
                     _formatDate(DateTime.parse(widget.review.date)),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color:themeNotifier.themeMode == ThemeMode.light
-                        ?Color(0xFF878080):Color(0xCAE3DCE4)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: themeNotifier.themeMode == ThemeMode.light
+                            ? Color(0xFF878080)
+                            : Color(0xCAE3DCE4)),
                   ),
                 ],
               ),
@@ -200,12 +165,11 @@ class _ReviewWidgetState extends State<ReviewWidget> {
             Center(
               child: Text(
                 widget.review.comment,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: themeNotifier.themeMode == ThemeMode.light
-                ? Colors.black
-                  : Colors.white,),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: themeNotifier.themeMode == ThemeMode.light
+                          ? Colors.black
+                          : Colors.white,
+                    ),
               ),
             ),
             const SizedBox(height: 8),
@@ -238,76 +202,124 @@ class _ReviewWidgetState extends State<ReviewWidget> {
               children: [
                 Column(
                   children: [
-                    if (_replies.isNotEmpty) ...[
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _showReplies = !_showReplies;
-                          });
-                        },
-                        child: Text(
-                          _showReplies
-                              ? 'Hide Replies'
-                              : 'Show Replies (${_replies.length})',
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                      if (_showReplies) ...[
-                        const SizedBox(height: 8),
-                        ..._replies.map((reply) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: themeNotifier.themeMode == ThemeMode.light
-                                      ? [Colors.blue.shade50, Colors.white]
-                                      : [
-                                    Colors.black54 ?? Colors.grey.shade700,
-                                    Colors.black54,
-                                    Colors.black54 ?? Colors.grey.shade900,
-                                  ],),
-                                borderRadius: BorderRadius.circular(8.0),
+                    StreamBuilder(
+                      stream: _repliesRef
+                          .orderByChild('comment')
+                          .equalTo(widget.review.comment)
+                          .onValue,
+                      builder:
+                          (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
+
+                        final data = snapshot.data?.snapshot.value
+                            as Map<Object?, Object?>?;
+                        final repliesList = data != null
+                            ? data.values.map((reply) {
+                                final replyData =
+                                    reply as Map<Object?, Object?>;
+                                return {
+                                  'name': replyData['name'] as String?,
+                                  'reply': replyData['reply'] as String?,
+                                  'timestamp':
+                                      replyData['timestamp'] as String?,
+                                };
+                              }).toList()
+                            : [];
+
+                        return Column(
+                          children: [
+                            if (repliesList.isNotEmpty) ...[
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _showReplies = !_showReplies;
+                                  });
+                                },
+                                child: Text(
+                                  _showReplies
+                                      ? 'Hide Replies'
+                                      : 'Show Replies (${repliesList.length})',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    reply['name'] ?? 'Anonymous',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
+                              if (_showReplies) ...[
+                                const SizedBox(height: 8),
+                                ...repliesList.map((reply) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: themeNotifier.themeMode ==
+                                                  ThemeMode.light
+                                              ? [
+                                                  Colors.blue.shade50,
+                                                  Colors.white
+                                                ]
+                                              : [
+                                                  Colors.black54,
+                                                  Colors.black54,
+                                                  Colors.black54,
+                                                ],
                                         ),
-                                  ),
-                                  Text(
-                                    _formatDate(
-                                        DateTime.parse(reply['timestamp'])),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(color: Colors.grey[600]),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    reply['reply'] ?? '',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(color: themeNotifier.themeMode == ThemeMode.light
-                                        ? Colors.black
-                                        : Colors.white,),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    ],
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            reply['name'] ?? 'Anonymous',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  color: Colors.blueAccent,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          Text(
+                                            _formatDate(DateTime.parse(
+                                                reply['timestamp'])),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                    color: Colors.grey[600]),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            reply['reply'] ?? '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge
+                                                ?.copyWith(
+                                                  color:
+                                                      themeNotifier.themeMode ==
+                                                              ThemeMode.light
+                                                          ? Colors.black
+                                                          : Colors.white,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ],
+                            ],
+                          ],
+                        );
+                      },
+                    ),
                   ],
                 ),
                 Align(

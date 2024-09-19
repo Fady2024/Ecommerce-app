@@ -3,7 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:async';
 import '../../main.dart';
 
 class CommentWidget extends StatefulWidget {
@@ -27,13 +27,13 @@ class CommentWidget extends StatefulWidget {
 }
 
 class _CommentWidgetState extends State<CommentWidget> {
-  final DatabaseReference _repliesRef =
-  FirebaseDatabase.instance.ref('replies');
+  final DatabaseReference _repliesRef = FirebaseDatabase.instance.ref('replies');
   final _replyController = TextEditingController();
   final _nameController = TextEditingController();
   bool _isReplying = false;
   bool _showReplies = false;
   List<Map<String, dynamic>> _replies = [];
+  late StreamSubscription<DatabaseEvent> _repliesSubscription;
 
   String _formatDate(DateTime date) {
     final DateFormat formatter = DateFormat('dd/MM/yyyy hh:mm a');
@@ -102,7 +102,6 @@ class _CommentWidgetState extends State<CommentWidget> {
       _nameController.clear();
       setState(() {
         _isReplying = false;
-        _loadReplies(); // Refresh replies list
       });
     } catch (e) {
       print('Error submitting reply: $e');
@@ -119,6 +118,22 @@ class _CommentWidgetState extends State<CommentWidget> {
   void initState() {
     super.initState();
     _loadReplies();
+
+    // Create a query to listen to changes in the replies
+    final query = _repliesRef.orderByChild('comment').equalTo(widget.comment);
+    _repliesSubscription = query.onValue.listen((event) {
+      if (event.snapshot.exists) {
+        _loadReplies(); // Refresh replies list
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _replyController.dispose();
+    _nameController.dispose();
+    _repliesSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -197,8 +212,9 @@ class _CommentWidgetState extends State<CommentWidget> {
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
-                        ?.copyWith(color:  themeNotifier.themeMode == ThemeMode.light
-                        ?Color(0xFF878080):Color(0xCAE3DCE4)),
+                        ?.copyWith(color: themeNotifier.themeMode == ThemeMode.light
+                        ? Color(0xFF878080)
+                        : Color(0xCAE3DCE4)),
                   ),
                 ],
               ),
@@ -212,7 +228,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                     .bodyLarge
                     ?.copyWith(color: themeNotifier.themeMode == ThemeMode.light
                     ? Colors.black
-                    : Colors.white,),
+                    : Colors.white),
               ),
             ),
             const SizedBox(height: 8),
@@ -271,9 +287,9 @@ class _CommentWidgetState extends State<CommentWidget> {
                                   colors: themeNotifier.themeMode == ThemeMode.light
                                       ? [Colors.blue.shade50, Colors.white]
                                       : [
-                                  Colors.black54 ?? Colors.grey.shade700,
                                     Colors.black54,
-                                    Colors.black54 ?? Colors.grey.shade900,
+                                    Colors.black54,
+                                    Colors.black54,
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -308,7 +324,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                         .bodyLarge
                                         ?.copyWith(color: themeNotifier.themeMode == ThemeMode.light
                                         ? Colors.black
-                                        : Colors.white,),
+                                        : Colors.white),
                                   ),
                                 ],
                               ),
