@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,7 +8,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../main.dart';
 import 'login_page.dart';
 import 'welcome_screen.dart';
@@ -20,18 +21,26 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _usernameController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final _picker = ImagePicker();
   final _googleSignIn = GoogleSignIn();
   File? _imageFile;
   bool _isPasswordValid = false;
-  bool _isPasswordLongEnough = false;
   bool _hasUppercase = false;
   bool _hasLowercase = false;
   bool _hasDigits = false;
   bool _hasSpecialChar = false;
   bool _isLoading = false;
+  bool _obscureText = true;
+  PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'EG');
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   void _showSnackBar(String title, String message, Icon icon) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -77,16 +86,18 @@ class _SignUpPageState extends State<SignUpPage> {
     final hasUppercase = password.contains(RegExp(r'[A-Z]'));
     final hasLowercase = password.contains(RegExp(r'[a-z]'));
     final hasDigits = password.contains(RegExp(r'[0-9]'));
-    final hasSpecialCharacters = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    final hasSpecialCharacters =
+    password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
     final isLongEnough = password.length >= 8;
 
     setState(() {
-      _isPasswordLongEnough = isLongEnough;
       _hasUppercase = hasUppercase;
       _hasLowercase = hasLowercase;
       _hasDigits = hasDigits;
       _hasSpecialChar = hasSpecialCharacters;
-      _isPasswordValid = isLongEnough && hasUppercase && hasLowercase && hasDigits && hasSpecialCharacters;
+      _isPasswordValid = isLongEnough &&
+          hasDigits &&
+          hasSpecialCharacters;
     });
 
     return _isPasswordValid;
@@ -95,10 +106,10 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> _signUp() async {
     setState(() => _isLoading = true);
 
-    if (_usernameController.text.isEmpty) {
+    if (_fullNameController.text.isEmpty) {
       _showSnackBar(
         'Warning',
-        'Username cannot be empty',
+        'Full name cannot be empty',
         Icon(Icons.error, color: Colors.pink),
       );
       setState(() => _isLoading = false);
@@ -142,7 +153,8 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+      await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -155,8 +167,20 @@ class _SignUpPageState extends State<SignUpPage> {
       }
 
       await userCredential.user?.updateProfile(
-        displayName: _usernameController.text,
+        displayName: _fullNameController.text,
       );
+
+      await FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(userCredential.user!.email!.replaceAll('.', ','))
+          .set({
+        'fullName': _fullNameController.text,
+        'phoneNumber': _phoneNumber.phoneNumber?.replaceFirst(RegExp(r'^\+\d{0,1}'), ''), // Remove the country code
+        'joinTime': ServerValue.timestamp, // Add this line to store server time
+      });
+
+
 
       _showSnackBar(
         'Sign up',
@@ -207,14 +231,16 @@ class _SignUpPageState extends State<SignUpPage> {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return;
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      UserCredential userCredential =
+      await _auth.signInWithCredential(credential);
 
       if (_imageFile != null) {
         String? imageUrl = await _uploadImage(_imageFile!);
@@ -226,6 +252,18 @@ class _SignUpPageState extends State<SignUpPage> {
       await userCredential.user?.updateProfile(
         displayName: userCredential.user?.displayName ?? 'User',
       );
+
+      // Save user information to Firebase Realtime Database with email as key
+      await FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(userCredential.user!.email!.replaceAll('.', ','))
+          .set({
+        'fullName': userCredential.user?.displayName ?? 'User',
+        'phoneNumber': _phoneNumber.phoneNumber?.replaceFirst(RegExp(r'^\+\d{0,1}'), ''), // Remove the country code
+        'joinTime': ServerValue.timestamp, // Add this line to store server time
+      });
+
 
       _showSnackBar(
         'Sign up',
@@ -244,7 +282,6 @@ class _SignUpPageState extends State<SignUpPage> {
       setState(() => _isLoading = false);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
@@ -288,17 +325,50 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 SizedBox(height: 16),
                 TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(labelText: 'Username'),
+                  controller: _fullNameController,
+                  decoration: InputDecoration(labelText: 'Full Name'),
                 ),
+                SizedBox(height: 16),
+                InternationalPhoneNumberInput(
+                  onInputChanged: (PhoneNumber number) {
+                    setState(() {
+                      _phoneNumber = number;
+                    });
+                  },
+                  initialValue: _phoneNumber,
+                  textFieldController: _phoneNumberController,
+                  inputBorder: OutlineInputBorder(),
+                  selectorConfig: SelectorConfig(
+                    selectorType: PhoneInputSelectorType.DIALOG,
+                    showFlags: true,
+                  ),
+                  ignoreBlank: false,
+                  autoValidateMode: AutovalidateMode.disabled,
+                  selectorTextStyle: TextStyle(color: Colors.black),
+                  textStyle: TextStyle(color: Colors.black),
+                  formatInput: false,
+                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                  onSaved: (PhoneNumber number) {
+                    print('On Saved: $number');
+                  },
+                ),
+                SizedBox(height: 16),
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(labelText: 'Email'),
                 ),
                 TextField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    ),
+                  ),
+                  obscureText: _obscureText,
                   onChanged: (value) => _isPasswordStrong(value),
                 ),
                 SizedBox(height: 16),
@@ -306,26 +376,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   Text(
                     'Password Strength:',
                     style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        _hasUppercase ? Icons.check : Icons.close,
-                        color: _hasUppercase ? Colors.green : Colors.red,
-                      ),
-                      SizedBox(width: 8),
-                      Text('Contains uppercase letter'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        _hasLowercase ? Icons.check : Icons.close,
-                        color: _hasLowercase ? Colors.green : Colors.red,
-                      ),
-                      SizedBox(width: 8),
-                      Text('Contains lowercase letter'),
-                    ],
                   ),
                   Row(
                     children: [
@@ -347,6 +397,26 @@ class _SignUpPageState extends State<SignUpPage> {
                       Text('Contains special characters'),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Icon(
+                        _hasUppercase ? Icons.check : Icons.warning_rounded,
+                        color: _hasUppercase ? Colors.green : Colors.yellow[700],
+                      ),
+                      SizedBox(width: 8),
+                      Text('Contains uppercase letter'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        _hasLowercase ? Icons.check : Icons.warning_rounded,
+                        color: _hasLowercase ? Colors.green : Colors.yellow[700],
+                      ),
+                      SizedBox(width: 8),
+                      Text('Contains lowercase letter'),
+                    ],
+                  ),
                 ],
                 SizedBox(height: 16),
                 ElevatedButton(
@@ -365,7 +435,19 @@ class _SignUpPageState extends State<SignUpPage> {
                     backgroundColor: Colors.blue, // Google color
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 15),
+                if (_isLoading)
+                  Container(
+                    child: Center(
+                      child: Lottie.asset(
+                        'lib/data/Animation - 1725477463954.json',
+                        width: double.infinity,
+                        height: 100,
+                      ),
+                    ),
+                  ),
+                SizedBox(height: 15),
+
                 Align(
                   alignment: Alignment.center,
                   child: GestureDetector(
@@ -379,9 +461,11 @@ class _SignUpPageState extends State<SignUpPage> {
                         children: [
                           TextSpan(
                             text: 'Already have an account? ',
-                            style: TextStyle(color: themeNotifier.themeMode == ThemeMode.light
-                                ? Colors.black
-                                : Colors.white,),
+                            style: TextStyle(
+                              color: themeNotifier.themeMode == ThemeMode.light
+                                  ? Colors.black
+                                  : Colors.white,
+                            ),
                           ),
                           const TextSpan(
                             text: 'Login',
@@ -392,19 +476,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
-                if (_isLoading)
-                  Container(
-                    child: Center(
-                      child: Lottie.asset('lib/data/Animation - 1725477463954.json',
-                        width:double.infinity,
-                        height: 100,
-                      ),
-                    ),
-                  ),
+
               ],
             ),
           ),
-
         ],
       ),
     );
