@@ -34,9 +34,11 @@ This e-commerce app was developed by **:**
 - They provide details about the e-commerce store, including its top-notch security.
 - After completing the onboarding process, it won't reappear, and the user is directed to the Welcome Screen.
 
-<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Onboarding%20Screen1.png" alt="Onboarding Screen 1" width="300"/>
-<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Onboarding%20Screen2.png" alt="Onboarding Screen 2" width="300"/>
-<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Onboarding%20Screen3.png" alt="Onboarding Screen 3" width="300"/>
+<div style="display: flex; justify-content: space-around;">
+    <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Onboarding%20Screen1.png" alt="Onboarding Screen 1" width="300"/>
+    <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Onboarding%20Screen2.png" alt="Onboarding Screen 2" width="300"/>
+    <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Onboarding%20Screen3.png" alt="Onboarding Screen 3" width="300"/>
+</div>
 
 ### Welcome Screen
 - The Welcome Screen provides options to log in, sign up, or log in as a guest.
