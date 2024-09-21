@@ -128,8 +128,29 @@ class _SignInScreenState extends State<SignInScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {
-                        // Handle Forgot Password
+                      onPressed: () async {
+                        if (_emailController.text.isNotEmpty) {
+                          try {
+                            await _auth.sendPasswordResetEmail(email: _emailController.text);
+                            _showSnackBar(
+                              'Success',
+                              'Password reset email sent! Check your inbox.',
+                              const Icon(Icons.email_outlined, color: Colors.white),
+                            );
+                          } catch (e) {
+                            _showSnackBar(
+                              'Error',
+                              'Failed to send password reset email. Please try again.',
+                              const Icon(Icons.error_outline, color: Colors.white),
+                            );
+                          }
+                        } else {
+                          _showSnackBar(
+                            'Error',
+                            'Please enter your email address.',
+                            const Icon(Icons.error_outline, color: Colors.white),
+                          );
+                        }
                       },
                       child: const Text(
                         'Forgot password?',
