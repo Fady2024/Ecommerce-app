@@ -50,9 +50,10 @@ This e-commerce app was developed by **:**
 - Users can either log in or sign up for a new account.
 - The signup process allows users to upload a profile picture, and enter their name, email, and password.
 - An alternative method is signing up using a Google account.
-
+<div style="display: flex; justify-content: space-around;">
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Login%20.png" alt="Login" width="300"/>
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Signup.png" alt="Signup" width="300"/>
+</div>
 
 ### Home Page (Discover)
 - The home page displays a carousel showcasing different categories like beauty, fragrances, furniture, and groceries.
