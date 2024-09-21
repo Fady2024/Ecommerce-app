@@ -118,7 +118,7 @@ This e-commerce app was developed by **:**
 ## Technologies Used
 - **Flutter**: For building the app.
 - **Bloc State Management**: To manage app state.
-- **Firebase**: For backend services and linking favorite products with user emails.
+- **Firebase**: This is for backend services.
 - **Google Sign-In API**: For authentication.
 
 ## Installation
