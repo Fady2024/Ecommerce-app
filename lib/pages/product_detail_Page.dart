@@ -8,6 +8,7 @@ import '../cubits/favorite_and_cart_cubit_management.dart';
 import '../cubits/favorites_and_cart_state_manager.dart';
 import '../data/product.dart';
 import '../main.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:async';
 import 'product_details_pages/PriceSection.dart';
 import 'product_details_pages/ReviewWidget.dart';
@@ -207,19 +208,28 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           IconButton(
             icon: Icon(Icons.share),
             onPressed: () {
-              // Implement share functionality if needed
+              // Share product details using the share_plus package
+              final String productDetails =
+                  '🌟 Check out this amazing product: *${widget.product.title}*!\n\n'
+                  '💰 Original Price: \$${widget.product.price.toStringAsFixed(2)}\n'
+                  '🎉 Discounted Price: \$${(widget.product.price * (1 - widget.product.discountPercentage / 100)).toStringAsFixed(2)}\n\n'
+                  '🛒 Grab it now and enjoy great savings! 🔥\n';
+                  //'👉 [Insert product link]';
+
+              Share.share(productDetails);
             },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Container(
               decoration: BoxDecoration(
-                  border: Border.all(
-                    color: themeNotifier.themeMode == ThemeMode.light
-                        ? Colors.black
-                        : Colors.white,
-                  ),
-                  borderRadius: BorderRadius.circular(15)),
+                border: Border.all(
+                  color: themeNotifier.themeMode == ThemeMode.light
+                      ? Colors.black
+                      : Colors.white,
+                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
               child: IconButton(
                 icon: Icon(
                   themeNotifier.themeMode == ThemeMode.light
