@@ -128,4 +128,4 @@ This e-commerce app was developed by **:**
 3. Run the app: `flutter run`
 
 ## Library Used
-The **DayNightSwitch** library (Copyright (c) 2022 Divyanshu Bhargava) was used in the development of this application, providing the feature to toggle between light and dark modes. You can view the code and more details [here](https://github.com/DivyanshuBhargava/DayNightSwitch).
+The **DayNightSwitch** library (Copyright (c) 2022 Divyanshu Bhargava) was used in the development of this application, providing the feature to toggle between light and dark modes. You can view the code and more details [here]([https://github.com/DivyanshuBhargava/DayNightSwitch](https://github.com/divyanshub024/day_night_switch)).
