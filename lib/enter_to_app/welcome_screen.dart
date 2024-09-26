@@ -4,34 +4,41 @@ import 'package:loginpage/enter_to_app/signup_page.dart';
 import 'package:loginpage/pages/ecommerce_page.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
+import '../pages/day_night_switch.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
+
+  void _toggleTheme(bool value) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _isDarkMode = value;
+      themeNotifier.toggleTheme(); // Assuming this method switches the theme in your provider
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: themeNotifier.themeMode == ThemeMode.light
-                        ? Colors.black
-                        : Colors.white,
-                  ),
-                  borderRadius: BorderRadius.circular(15)),
-              child: IconButton(
-                icon: Icon(
-                  themeNotifier.themeMode == ThemeMode.light
-                      ? Icons.nightlight_round
-                      : Icons.wb_sunny,
-                ),
-                onPressed: () {
-                  themeNotifier.toggleTheme();
-                },
-              ),
+            child: DayNightSwitch(
+              value: _isDarkMode,
+              onChanged: _toggleTheme,
+              moonImage: AssetImage('assets/moon.png'),
+              sunImage: AssetImage('assets/sun.png'),
+              sunColor: Colors.yellow,
+              moonColor: Colors.white,
+              dayColor: Colors.blue,
+              nightColor: Color(0xFF393939),
             ),
           ),
         ],
@@ -49,15 +56,15 @@ class WelcomeScreen extends StatelessWidget {
                   child: Image.asset("assets/Untitled-1.png"),
                 ),
                 const SizedBox(height: 20.0),
-                const Text(
-                  'Welcome to AFK Market!',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                Text(
+                  selectedLanguage == 'Français' ? 'Bienvenue sur AFK Market!' : 'Welcome to AFK Market!',
+                  style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10.0),
-                const Text(
-                  'Everything you need, all in one place.',
-                  style: TextStyle(fontSize: 16.0),
+                Text(
+                  selectedLanguage == 'Français' ? 'Tout ce dont vous avez besoin, au même endroit.' : 'Everything you need, all in one place.',
+                  style: const TextStyle(fontSize: 16.0),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 30.0),
@@ -73,8 +80,10 @@ class WelcomeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child:
-                      const Text('Log In', style: TextStyle(color: Colors.red)),
+                  child: Text(
+                    selectedLanguage == 'Français' ? 'Se connecter' : 'Log In',
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 ),
                 const SizedBox(height: 10.0),
                 OutlinedButton(
@@ -83,9 +92,9 @@ class WelcomeScreen extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => SignUpPage()),
                     );
                   },
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                  child: Text(
+                    selectedLanguage == 'Français' ? 'S\'inscrire' : 'Sign Up',
+                    style: const TextStyle(color: Colors.blue, fontSize: 18),
                   ),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.blue),
@@ -101,9 +110,9 @@ class WelcomeScreen extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => Ecommerce()),
                     );
                   },
-                  child: const Text(
-                    'GUEST LOGIN',
-                    style: TextStyle(color: Color(0xFF1B681D), fontSize: 18),
+                  child: Text(
+                    selectedLanguage == 'Français' ? 'CONTINUER EN TANT QU\'INVITÉ' : 'CONTINUE AS GUEST',
+                    style: const TextStyle(color: Color(0xFF1B681D), fontSize: 18),
                   ),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Color(0xFF1B681D)),

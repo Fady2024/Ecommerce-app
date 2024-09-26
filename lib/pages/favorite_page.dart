@@ -6,16 +6,26 @@ import '../data/product.dart';
 import '../cubits/favorite_and_cart_cubit_management.dart';
 import '../cubits/favorites_and_cart_state_manager.dart';
 import '../main.dart';
+import 'day_night_switch.dart';
 import 'product_detail_Page.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
-
   @override
   State<FavoritePage> createState() => _FavoritePageState();
 }
-
 class _FavoritePageState extends State<FavoritePage> {
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
+  // Toggle theme mode
+  void _toggleTheme(bool value) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _isDarkMode = value;
+      themeNotifier
+          .toggleTheme(); // Assuming this method switches the theme in your provider
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FadyCardCubit, FavoritesAndCartState>(
@@ -23,7 +33,6 @@ class _FavoritePageState extends State<FavoritePage> {
         // Optionally, handle specific states here
       },
       builder: (context, state) {
-        final themeNotifier = Provider.of<ThemeNotifier>(context);
 
         if (state is FavoritesAndCartUpdated) {
           final favoriteItemIds = state.favoriteItemIds;
@@ -36,29 +45,21 @@ class _FavoritePageState extends State<FavoritePage> {
 
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Favorite Items'),
+              title: selectedLanguage == 'Français'
+                  ? const Text('Vos favoris')
+                  : const Text('Your Favorites'),
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: themeNotifier.themeMode == ThemeMode.light
-                            ? Colors.black
-                            : Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        themeNotifier.themeMode == ThemeMode.light
-                            ? Icons.nightlight_round
-                            : Icons.wb_sunny,
-                      ),
-                      onPressed: () {
-                        themeNotifier.toggleTheme();
-                      },
-                    ),
+                  child: DayNightSwitch(
+                    value: _isDarkMode,
+                    onChanged: _toggleTheme,
+                    moonImage: AssetImage('assets/moon.png'),
+                    sunImage: AssetImage('assets/sun.png'),
+                    sunColor: Colors.yellow,
+                    moonColor: Colors.white,
+                    dayColor: Colors.blue,
+                    nightColor: Color(0xFF393939),
                   ),
                 ),
               ],
@@ -75,7 +76,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No favorite items yet!',
+                          selectedLanguage == 'Français' ? 'Pas encore d\'articles favoris !' : 'No favorite items yet!',
                           style:
                               Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: Colors.grey,

@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import '../data/product.dart';
 import '../data/data_service.dart';
 import 'favorites_and_cart_state_manager.dart';
@@ -8,17 +10,19 @@ import 'favorites_and_cart_state_manager.dart';
 class FadyCardCubit extends Cubit<FavoritesAndCartState> {
   final DataService _dataService = DataService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final DatabaseReference _favoritesRef =
-      FirebaseDatabase.instance.ref().child('favorites');
-  final DatabaseReference _cartRef =
-      FirebaseDatabase.instance.ref().child('carts'); // Add this line
+
+  // References to user data in Firebase
+  final DatabaseReference _userRef = FirebaseDatabase.instance.ref().child('users');
 
   FadyCardCubit() : super(FavoritesAndCartInitial()) {
-    _loadProducts();
+    loadProducts();
     _auth.authStateChanges().listen((user) {
       if (user != null) {
-        _loadFavoriteProducts(); // Load favorites for the new user
-        loadCartProducts(); // Load cart items for the new user
+        _loadFavoriteProducts(user.email!); // Load favorites for the authenticated user
+        loadCartProducts(); // Load cart items for the authenticated user
+      } else {
+        // Handle guest logic if necessary
+        _loadGuestFavorites(); // Load favorites for guest
       }
     });
   }
@@ -33,7 +37,7 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
       .where((product) => _favoriteItemIds.contains(product.id))
       .toList();
 
-  Future<void> _loadProducts() async {
+  Future<void> loadProducts() async {
     try {
       final products = await _dataService.loadProducts();
       _shopItems = products;
@@ -48,44 +52,69 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
     }
   }
 
-  Future<void> _loadFavoriteProducts() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      final sanitizedEmail = _sanitizeEmail(user.email!);
-      final userFavoritesRef = _favoritesRef.child(sanitizedEmail);
+  Future<void> _loadFavoriteProducts(String email) async {
+    final sanitizedEmail = _sanitizeEmail(email);
+    final userFavoritesRef = _userRef.child('accountUsers').child(sanitizedEmail).child('favorites');
 
-      try {
-        final snapshot = await userFavoritesRef.get();
-        final favoriteIds = snapshot.value;
-        _favoriteItemIds.clear(); // Clear previous data
+    try {
+      final snapshot = await userFavoritesRef.get();
+      final favoriteIds = snapshot.value;
+      _favoriteItemIds.clear(); // Clear previous data
 
-        if (favoriteIds is List) {
-          _favoriteItemIds.addAll(favoriteIds.map((id) => id as int));
-        } else if (favoriteIds != null) {
-          _favoriteItemIds.addAll([favoriteIds].map((id) => id as int));
-        }
-
-        // Emit the updated state
-        emit(FavoritesAndCartUpdated(
-          shopItems: _shopItems,
-          cartItems: _cartItems,
-          favoriteItemIds: _favoriteItemIds.toList(),
-          totalPrice: _calculateTotal(),
-        ));
-      } catch (error) {
-        emit(FavoritesAndCartError(
-            'Failed to load favorite products: ${error.toString()}'));
+      if (favoriteIds is List) {
+        _favoriteItemIds.addAll(favoriteIds.map((id) => id as int));
+      } else if (favoriteIds != null) {
+        _favoriteItemIds.addAll([favoriteIds].map((id) => id as int));
       }
+
+      emit(FavoritesAndCartUpdated(
+        shopItems: _shopItems,
+        cartItems: _cartItems,
+        favoriteItemIds: _favoriteItemIds.toList(),
+        totalPrice: _calculateTotal(),
+      ));
+    } catch (error) {
+      emit(FavoritesAndCartError('Failed to load user favorite products: ${error.toString()}'));
+    }
+  }
+
+  Future<void> _loadGuestFavorites() async {
+    final deviceId = await _getDeviceId(); // Get device ID for guest
+    final guestFavoritesRef = _userRef.child('guestUsers').child(deviceId).child('favorites');
+
+    try {
+      final snapshot = await guestFavoritesRef.get();
+      final favoriteIds = snapshot.value;
+      _favoriteItemIds.clear(); // Clear previous data
+
+      if (favoriteIds is List) {
+        _favoriteItemIds.addAll(favoriteIds.map((id) => id as int));
+      } else if (favoriteIds != null) {
+        _favoriteItemIds.addAll([favoriteIds].map((id) => id as int));
+      }
+
+      emit(FavoritesAndCartUpdated(
+        shopItems: _shopItems,
+        cartItems: _cartItems,
+        favoriteItemIds: _favoriteItemIds.toList(),
+        totalPrice: _calculateTotal(),
+      ));
+    } catch (error) {
+      emit(FavoritesAndCartError('Failed to load guest favorite products: ${error.toString()}'));
     }
   }
 
   Future<void> _saveFavoriteProducts() async {
     final user = _auth.currentUser;
+    final deviceId = await _getDeviceId(); // Get device ID for guest
+
     if (user != null) {
       final sanitizedEmail = _sanitizeEmail(user.email!);
-      final userFavoritesRef = _favoritesRef.child(sanitizedEmail);
-
+      final userFavoritesRef = _userRef.child('accountUsers').child(sanitizedEmail).child('favorites');
       await userFavoritesRef.set(_favoriteItemIds.toList());
+    } else {
+      final guestFavoritesRef = _userRef.child('guestUsers').child(deviceId).child('favorites');
+      await guestFavoritesRef.set(_favoriteItemIds.toList());
     }
   }
 
@@ -93,7 +122,7 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
     final user = _auth.currentUser;
     if (user != null) {
       final sanitizedEmail = _sanitizeEmail(user.email!);
-      final userCartRef = _cartRef.child(sanitizedEmail);
+      final userCartRef = _userRef.child('accountUsers').child(sanitizedEmail).child('carts');
 
       try {
         final snapshot = await userCartRef.get();
@@ -134,7 +163,7 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
     final user = _auth.currentUser;
     if (user != null) {
       final sanitizedEmail = _sanitizeEmail(user.email!);
-      final userCartRef = _cartRef.child(sanitizedEmail);
+      final userCartRef = _userRef.child('accountUsers').child(sanitizedEmail).child('carts');
 
       final cartData = _cartItems.map((item) {
         final product = item['item'] as Product;
@@ -151,29 +180,35 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
     }
   }
 
-
   void addItemToCart(int index) {
     final item = _shopItems[index];
-    final existingItemIndex = _cartItems.indexWhere(
-      (element) => element['item'] == item,
-    );
+    final user = _auth.currentUser; // Check if the user is logged in
 
-    if (existingItemIndex == -1) {
-      _cartItems.add({
-        'item': item,
-        'quantity': 1,
-      });
+    if (user != null) {
+      final existingItemIndex = _cartItems.indexWhere(
+            (element) => element['item'] == item,
+      );
 
-      emit(FavoritesAndCartUpdated(
-        shopItems: _shopItems,
-        cartItems: _cartItems,
-        favoriteItemIds: _favoriteItemIds.toList(),
-        totalPrice: _calculateTotal(),
-      ));
+      if (existingItemIndex == -1) {
+        _cartItems.add({
+          'item': item,
+          'quantity': 1,
+        });
 
-      _saveCartProducts(); // Save updated cart to Firebase
+        emit(FavoritesAndCartUpdated(
+          shopItems: _shopItems,
+          cartItems: _cartItems,
+          favoriteItemIds: _favoriteItemIds.toList(),
+          totalPrice: _calculateTotal(),
+        ));
+
+        _saveCartProducts(); // Save updated cart to Firebase
+      } else {
+        emit(FavoritesAndCartError('This product is already in the cart.'));
+      }
     } else {
-      emit(FavoritesAndCartError('This product is already in the cart.'));
+      // User is not logged in
+      emit(FavoritesAndCartError('🌟 You need to be logged in to add items to your cart! 🛒✨ Please sign up or log in to start shopping and enjoy exclusive benefits! 🎉'));
     }
   }
 
@@ -224,20 +259,6 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
     }
   }
 
-  /* void removeItemFromCart(int index) {
-    if (index >= 0 && index < _cartItems.length) {
-      _cartItems.removeAt(index);
-      emit(FadyCardUpdated(
-        shopItems: _shopItems,
-        cartItems: _cartItems,
-        favoriteItemIds: _favoriteItemIds.toList(),
-        totalPrice: _calculateTotal(),
-      ));
-
-      _saveCartProducts(); // Save updated cart to Firebase
-    }
-  }
-*/
   void clearCard() {
     _cartItems.clear();
     emit(FavoritesAndCartUpdated(
@@ -289,6 +310,18 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
 
   String _sanitizeEmail(String email) {
     // Replace invalid characters in the email
-    return email.replaceAll(RegExp(r'[.#$[\]]'), '_');
+    return email.replaceAll(RegExp(r'[.#$[\]]'), ',');
+  }
+  Future<String> _getDeviceId() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    String deviceId = '';
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
+      deviceId = _sanitizeEmail(androidInfo.id); // Unique ID on Android
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+      deviceId = iosInfo.identifierForVendor!; // Unique ID on iOS
+    }
+    return deviceId;
   }
 }

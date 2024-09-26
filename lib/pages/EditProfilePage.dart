@@ -4,14 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:lottie/lottie.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:provider/provider.dart';
 import '../cubits/auth_cubit.dart';
 import '../cubits/user_profile_provider.dart';
 import '../enter_to_app/welcome_screen.dart';
-import '../main.dart'; // Assuming ThemeNotifier is in your main.dart
+import '../main.dart';
+import 'day_night_switch.dart'; // Assuming ThemeNotifier is in your main.dart
 
 class EditProfilePage extends StatefulWidget {
   final VoidCallback? onProfileUpdated;
@@ -28,7 +28,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
+
   bool _isLoading = false;
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   bool _isPasswordVisible = false; // Added for password visibility
   String? _joinDate;
 
@@ -48,8 +51,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
+        // For authenticated users, use their email as the key
         _nameController.text = user.displayName ?? '';
         _userRef
+            .child('accountUsers')
             .child(user.email!.replaceAll('.', ','))
             .once()
             .then((snapshot) {
@@ -81,7 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _getMonthName(int month) {
-    const months = [
+    const monthsEn = [
       'January',
       'February',
       'March',
@@ -95,8 +100,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
       'November',
       'December'
     ];
-    return months[month - 1];
+
+    const monthsFr = [
+      'Janvier',
+      'Février',
+      'Mars',
+      'Avril',
+      'Mai',
+      'Juin',
+      'Juillet',
+      'Août',
+      'Septembre',
+      'Octobre',
+      'Novembre',
+      'Décembre'
+    ];
+
+    return selectedLanguage == 'Français' ? monthsFr[month - 1] : monthsEn[month - 1];
   }
+
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -132,13 +154,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
         );
 
         // Update other profile details in Firebase Realtime Database
-        await _userRef.child(user.email!.replaceAll('.', ',')).update({
+        await _userRef.child('accountUsers').child(user.email!.replaceAll('.', ',')).update({
           'fullName': _nameController.text,
           'phoneNumber': _phoneController.text,
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully')),
+          SnackBar(content: Text(selectedLanguage == 'Français' ?'Profil mis à jour avec succès':'Profile updated successfully')),
         );
 
         if (widget.onProfileUpdated != null) {
@@ -152,7 +174,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating profile: $e')),
+        SnackBar(content: Text(selectedLanguage == 'Français' ?'Erreur lors de la mise à jour du profil : $e':'Error updating profile: $e')),
       );
     } finally {
       setState(() {
@@ -182,30 +204,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (user == null) return;
 
     try {
-      // Prompt user for password confirmation
-      final shouldDelete = await _confirmDeletion();
-      if (!shouldDelete) return;
-
       // Re-authenticate the user
       await _reauthenticateUser(user);
 
       // Delete user account from Firebase Auth
       await user.delete();
 
+      // Sanitize email to use as Firebase key
+      final sanitizedEmail = user.email!.replaceAll('.', ',');
+
       // Delete user's data from Firebase Realtime Database
-      await _userRef.child(user.email!.replaceAll('.', ',')).remove();
+      await FirebaseDatabase.instance.ref().child('accountUsers').child(sanitizedEmail).remove(); // Delete user profile and all associated data
 
       // Delete user's image from Firebase Storage
       await _deleteUserImage(user.uid);
-
       // Redirect to WelcomeScreen after deletion
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => WelcomeScreen()),
-        (Route<dynamic> route) => false,
+            (Route<dynamic> route) => false,
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting account: $e')),
+        SnackBar(content: Text(selectedLanguage == 'Français' ?'Erreur lors de la suppression du compte : $e':'Error deleting account: $e')),
       );
     } finally {
       setState(() {
@@ -219,7 +239,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final password = await _showReauthenticationDialog();
 
     if (password == null || password.isEmpty) {
-      throw Exception('Password cannot be empty');
+      throw Exception(selectedLanguage == 'Français' ?'Le mot de passe ne peut pas être vide':'Password cannot be empty');
     }
 
     // Re-authenticate with the user's credentials
@@ -234,14 +254,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
       builder: (context) {
         final passwordController = TextEditingController();
         return AlertDialog(
-          title: const Text('Re-authenticate'),
+          title: Text(selectedLanguage == 'Français' ?'Confirmer la suppression':'Confirm Deletion'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: selectedLanguage == 'Français' ?'Veuillez entrer votre mot de passe':'Please Enter Your Password'),
               ),
             ],
           ),
@@ -249,11 +269,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
             TextButton(
               onPressed: () =>
                   Navigator.of(context).pop(passwordController.text),
-              child: const Text('Confirm'),
+              child: Text(selectedLanguage == 'Français' ?'Confirmer':'Confirm'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: const Text('Cancel'),
+              child: Text(selectedLanguage == 'Français' ?'Annuler':'Cancel'),
             ),
           ],
         );
@@ -269,32 +289,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
           .child('$userId.jpg');
       await storageRef.delete();
     } catch (e) {
-      print('Error deleting image: $e');
+      print(selectedLanguage == 'Français' ?'Erreur lors de la suppression de l\'image : $e':'Error deleting image: $e');
     }
   }
 
-  Future<bool> _confirmDeletion() async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Confirm Deletion'),
-              content: const Text(
-                  'Are you sure you want to delete your account? This action cannot be undone.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Delete'),
-                ),
-              ],
-            );
-          },
-        ) ??
-        false;
+  // Toggle theme mode
+  void _toggleTheme(bool value) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _isDarkMode = value;
+      themeNotifier
+          .toggleTheme(); // Assuming this method switches the theme in your provider
+    });
   }
 
   @override
@@ -305,118 +311,128 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: Text(selectedLanguage == 'Français' ?'Modifier le profil':'Edit Profile'),
         backgroundColor: isDarkMode ? Colors.black : Colors.white,
         foregroundColor: isDarkMode ? Colors.white : Colors.black,
         actions: [
-          IconButton(
-            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nights_stay),
-            onPressed: () {
-              themeNotifier.toggleTheme();
-            },
-          )
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: DayNightSwitch(
+              value: _isDarkMode,
+              onChanged: _toggleTheme,
+              moonImage: AssetImage('assets/moon.png'),
+              sunImage: AssetImage('assets/sun.png'),
+              sunColor: Colors.yellow,
+              moonColor: Colors.white,
+              dayColor: Colors.blue,
+              nightColor: Color(0xFF393939),
+            ),
+          ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            UpdatedImage(),
-            const SizedBox(height: 20.0),
-            _buildTextField(
-              controller: _nameController,
-              labelText: 'Full Name',
-              icon: Icons.person,
-              isDarkMode: isDarkMode,
-            ),
-            const SizedBox(height: 16.0),
-            _buildTextField(
-              controller: _phoneController,
-              labelText: 'Phone Number',
-              icon: Icons.phone,
-              keyboardType: TextInputType.phone,
-              isDarkMode: isDarkMode,
-            ),
-            const SizedBox(height: 16.0),
-            _buildTextField(
-              controller: _passwordController,
-              labelText: 'New Password',
-              icon: Icons.lock,
-              obscureText: !_isPasswordVisible,
-              isDarkMode: isDarkMode,
-              togglePasswordVisibility: () {
-                setState(() {
-                  _isPasswordVisible = !_isPasswordVisible;
-                });
-              },
-            ),
-            const SizedBox(height: 20.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              UpdatedImage(),
+              const SizedBox(height: 20.0),
+              _buildTextField(
+                controller: _nameController,
+                labelText: selectedLanguage == 'Français' ? 'Nom Complet' : 'Full Name',
+                icon: Icons.person,
+                isDarkMode: isDarkMode,
               ),
-              onPressed: _updateProfile,
-              child: const Text(
-                'Update Profile',
-                style: TextStyle(color: Colors.black),
+              const SizedBox(height: 16.0),
+              _buildTextField(
+                controller: _phoneController,
+                labelText: selectedLanguage == 'Français' ? 'Numéro de Téléphone' : 'Phone Number',
+                icon: Icons.phone,
+                keyboardType: TextInputType.phone,
+                isDarkMode: isDarkMode,
               ),
-            ),
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (_joinDate != null)
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Joined ',
-                          style: TextStyle(
-                            color: isDarkMode
-                                ? Colors.white
-                                : Colors.black, // Use your desired color
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                              _joinDate, // This will contain the formatted date
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: isDarkMode
-                                ? Colors.white
-                                : Colors.black, // Use your desired color
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(17)),
-                  child: TextButton(
-                    onPressed: _deleteAccount,
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.red,
-                    ),
-                    child: const Text('Delete'),
+              const SizedBox(height: 16.0),
+              _buildTextField(
+                controller: _passwordController,
+                labelText: selectedLanguage == 'Français' ? 'Nouveau Mot de Passe' : 'New Password',
+                icon: Icons.lock,
+                obscureText: !_isPasswordVisible,
+                isDarkMode: isDarkMode,
+                togglePasswordVisibility: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
+              const SizedBox(height: 20.0),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.yellow,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-              ],
-            ),
-            if (_isLoading)
-              Center(
-                child: Lottie.asset(
-                  'lib/data/Animation - 1725477463954.json',
-                  width: double.infinity,
-                  height: 100,
+                onPressed: _updateProfile,
+                child: Text(
+                  selectedLanguage == 'Français' ? 'Mettre à Jour le Profil' : 'Update Profile',
+                  style: TextStyle(color: Colors.black),
                 ),
               ),
-          ],
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (_joinDate != null)
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: selectedLanguage == 'Français' ? 'Rejoint le ' : 'Joined ',
+                            style: TextStyle(
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : Colors.black, // Use your desired color
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                _joinDate, // This will contain the formatted date
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : Colors.black, // Use your desired color
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.redAccent.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(17)),
+                    child: TextButton(
+                      onPressed: _deleteAccount,
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.red,
+                      ),
+                      child: Text(                    selectedLanguage == 'Français' ? 'Supprimer' : 'Delete',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (_isLoading)
+                Center(
+                  child: Lottie.asset(
+                    'lib/data/Animation - 1725477463954.json',
+                    width: double.infinity,
+                    height: 100,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -510,8 +526,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               if (snapshot.connectionState == ConnectionState.waiting)
                 const CircularProgressIndicator()
               else if (!snapshot.hasData || snapshot.data == null)
-                const Text(
-                  'No image available',
+                 Text(
+                  selectedLanguage == 'Français' ? 'Aucune image disponible':'No image available',
                   style: TextStyle(color: Colors.red),
                 ),
             ],
@@ -523,17 +539,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<String?> _getProfileImageUrl() async {
     final user = _auth.currentUser;
     if (user != null) {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('user_images')
-          .child('${user.uid}.jpg');
-      try {
-        return await storageRef.getDownloadURL();
-      } catch (e) {
-        print('Error getting image URL: $e');
-        return null;
+      final List<String> extensions = ['jpg', 'jpeg', 'png', 'gif']; // Add other formats if needed
+      for (String ext in extensions) {
+        final storageRef = FirebaseStorage.instance
+            .ref()
+            .child('user_images')
+            .child('${user.uid}.$ext');
+        try {
+          return await storageRef.getDownloadURL();
+        } catch (e) {
+          // Continue to try the next extension if the current one fails
+          print(selectedLanguage == 'Français'
+              ? 'Erreur lors de l\'obtention de l\'URL de l\'image avec .$ext : $e'
+              : 'Error getting image URL with .$ext: $e');
+        }
       }
     }
-    return null;
+    return null; // Return null if none of the extensions work
   }
 }

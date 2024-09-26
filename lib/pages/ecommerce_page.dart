@@ -12,20 +12,24 @@ import 'page_of_card.dart';
 import '../main.dart'; // Import ThemeNotifier
 
 class Ecommerce extends StatefulWidget {
-  const Ecommerce({super.key});
+  final int selectedPos; // Add this parameter
+
+  const Ecommerce({super.key, this.selectedPos = 0}); // Default to 0
 
   @override
   EcommerceState createState() => EcommerceState();
 }
 
 class EcommerceState extends State<Ecommerce> {
-  int _selectedPos = 0;
+  late int _selectedPos;
   final double _bottomNavBarHeight = 60;
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
   late final CircularBottomNavigationController _navigationController;
 
   @override
   void initState() {
     super.initState();
+    _selectedPos = widget.selectedPos; // Use the passed parameter
     _navigationController = CircularBottomNavigationController(_selectedPos);
     _openAndCloseCardPage();
   }
@@ -37,20 +41,30 @@ class EcommerceState extends State<Ecommerce> {
   }
 
   Future<void> _openAndCloseCardPage() async {
-    await Future.delayed(const Duration(seconds: 7)); // 7-second delay before opening CardPage
+    await Future.delayed(const Duration(seconds: 10)); // 10-second delay before opening CardPage
+
+    if (!mounted) return; // Check if the widget is still mounted
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CardPage()),
     );
 
     // Close CardPage after a short delay
-    await Future.delayed(const Duration(milliseconds: 100)); // Duration for how long CardPage will be visible
+    await Future.delayed(const Duration(milliseconds: 10)); // Duration for how long CardPage will be visible
+
+    if (!mounted) return; // Check if the widget is still mounted before popping
     Navigator.of(context).pop();
   }
+
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+
+    String homeLabel = selectedLanguage == 'Français' ? 'Accueil' : 'Home';
+    String favoriteLabel = selectedLanguage == 'Français' ? 'Favoris' : 'Favorite';
+    String accountLabel = selectedLanguage == 'Français' ? 'Compte' : 'Account';
 
     return Scaffold(
       body: Stack(
@@ -70,7 +84,7 @@ class EcommerceState extends State<Ecommerce> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: _buildBottomNav(themeNotifier.themeMode),
+            child: _buildBottomNav(themeNotifier.themeMode, homeLabel, favoriteLabel, accountLabel),
           ),
         ],
       ),
@@ -140,11 +154,11 @@ class EcommerceState extends State<Ecommerce> {
     );
   }
 
-  Widget _buildBottomNav(ThemeMode themeMode) {
+  Widget _buildBottomNav(ThemeMode themeMode, String homeLabel, String favoriteLabel, String accountLabel) {
     Color barBackgroundColor = themeMode == ThemeMode.light ? Colors.white : Colors.black;
 
     return CircularBottomNavigation(
-      _tabItems,
+      _tabItems(homeLabel, favoriteLabel, accountLabel),
       controller: _navigationController,
       selectedPos: _selectedPos,
       barHeight: _bottomNavBarHeight,
@@ -161,21 +175,23 @@ class EcommerceState extends State<Ecommerce> {
     );
   }
 
-  final List<TabItem> _tabItems = [
-    TabItem(
-      Icons.shopping_bag,
-      "Items",
-      Colors.blue,
-    ),
-    TabItem(
-      Icons.favorite,
-      "Favorite",
-      Colors.red,
-    ),
-    TabItem(
-      Icons.account_circle,
-      "Account",
-      Colors.green,
-    ),
-  ];
+  List<TabItem> _tabItems(String homeLabel, String favoriteLabel, String accountLabel) {
+    return [
+      TabItem(
+        Icons.shopping_bag,
+        homeLabel,
+        Colors.blue,
+      ),
+      TabItem(
+        Icons.favorite,
+        favoriteLabel,
+        Colors.red,
+      ),
+      TabItem(
+        Icons.account_circle,
+        accountLabel,
+        Colors.green,
+      ),
+    ];
+  }
 }

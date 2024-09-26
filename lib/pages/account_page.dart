@@ -1,14 +1,20 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:loginpage/pages/EditProfilePage.dart';
 import 'package:loginpage/enter_to_app/welcome_screen.dart';
+import 'package:loginpage/pages/restart.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../cubits/favorite_and_cart_cubit_management.dart';
 import '../main.dart';
 import 'OnboardingScreen2.dart';
+import 'day_night_switch.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -20,31 +26,115 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final DatabaseReference _userRef =
-  FirebaseDatabase.instance.ref('users'); // Reference to user data
-  String _selectedLanguage = 'English';
+      FirebaseDatabase.instance.ref('users'); // Reference to user data
+  String _selectedLanguage =
+      AppState().selectedLanguage; // Initialize with the globally set language
   String? _fullName;
+  String? _userEmail; // Add this variable
+  String? _deviceId; // Add device ID variable
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
+  late StreamSubscription<DatabaseEvent>? _userChangesSubscription; // Make it nullable
+  late ThemeNotifier _themeNotifier; // Store the theme notifier reference
 
   @override
   void initState() {
     super.initState();
     _listenForUserChanges();
+    _loadUserData();
   }
 
-  void _listenForUserChanges() {
-    final userId = _auth.currentUser?.uid;
-    if (userId != null) {
-      // Listen for changes in the user's full name
-      _userRef.child(userId).onValue.listen((event) {
-        final data = event.snapshot.value as Map<dynamic, dynamic>?;
-        setState(() {
-          _fullName = data?['fullName'] as String?;
-        });
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _themeNotifier = Provider.of<ThemeNotifier>(context); // Get the ThemeNotifier reference
+    _getDeviceId();
+  }
+
+  Future<void> _getDeviceId() async {
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
+      _deviceId = _sanitizeEmail(androidInfo.id);
+    } else if (Theme.of(context).platform == TargetPlatform.iOS) {
+      IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+      _deviceId = iosInfo.identifierForVendor;
+    }
+  }
+
+
+  void _updateLanguage(String language) async {
+    setState(() {
+      _selectedLanguage = language;
+    });
+    final languagePreference = language == 'English' ? 'en' : 'fr';
+
+    if (_userEmail != null) {
+      final sanitizedEmail = _sanitizeEmail(_userEmail!);
+      await _userRef.child('accountUsers').child(sanitizedEmail).child('language').set(languagePreference);
+    }
+
+    if (_deviceId != null) {
+      await _userRef.child('guestUsers').child(_deviceId!).child('language').set(languagePreference);
+    }
+
+    AppState().setLanguage(language);
+    AppState().setLoading(true);
+    RestartWidget.restartApp(context);
+  }
+
+  void _loadUserData() {
+    final user = _auth.currentUser;
+    if (user != null) {
+      _userEmail = user.email;
+      _userRef.child('accountUsers').child(_sanitizeEmail(_userEmail!)).child('language').once().then((DatabaseEvent event) {
+        final snapshot = event.snapshot;
+        if (mounted) {
+          setState(() {
+            _selectedLanguage = snapshot.exists && snapshot.value == 'fr' ? 'Français' : 'English';
+            AppState().setLanguage(_selectedLanguage);
+          });
+        }
+      });
+    } else if (_deviceId != null) {
+      _userRef.child('guestUsers').child(_deviceId!).child('language').once().then((DatabaseEvent event) {
+        final snapshot = event.snapshot;
+        if (mounted) {
+          setState(() {
+            _selectedLanguage = snapshot.exists && snapshot.value == 'fr' ? 'Français' : 'English';
+            AppState().setLanguage(_selectedLanguage);
+          });
+        }
       });
     }
   }
+
+  void _listenForUserChanges() {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final sanitizedEmail = _sanitizeEmail(user.email!);
+      _userChangesSubscription = _userRef.child('accountUsers').child(sanitizedEmail).onValue.listen((event) {
+        if (mounted) {
+          final data = event.snapshot.value as Map<dynamic, dynamic>?;
+          setState(() {
+            _fullName = data?['fullName'] as String?;
+            _selectedLanguage = data?['language'] == 'fr' ? 'Français' : 'English';
+          });
+        }
+      });
+    } else if (_deviceId != null) {
+      _userChangesSubscription = _userRef.child('guestUsers').child(_deviceId!).onValue.listen((event) {
+        if (mounted) {
+          final data = event.snapshot.value as Map<dynamic, dynamic>?;
+          setState(() {
+            _selectedLanguage = data?['language'] == 'fr' ? 'Français' : 'English';
+          });
+        }
+      });
+    }
+  }
+
   void _refreshAccountPage() {
     setState(() {
-      // Trigger reload of profile details
       _listenForUserChanges();
     });
   }
@@ -53,107 +143,156 @@ class _AccountPageState extends State<AccountPage> {
     final fadyCardCubit = context.read<FadyCardCubit>();
     fadyCardCubit.clearFavorites();
     fadyCardCubit.clearCard();
+
     await _auth.signOut();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => WelcomeScreen()),
-    );
+
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => WelcomeScreen()),
+      );
+    }
   }
 
-  void showLanguageMenu(BuildContext context) {
-    showMenu<String>(
-      context: context,
-      position: const RelativeRect.fromLTRB(100, 100, 0, 0),
-      items: [
-        const PopupMenuItem<String>(
-          value: 'English',
-          child: Text('English'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Arabic',
-          child: Text('العربية'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'French',
-          child: Text('Français'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Spanish',
-          child: Text('Español'),
-        ),
-      ],
-    );
+  String _sanitizeEmail(String email) {
+    return email.replaceAll(RegExp(r'[.#$[\]]'), ',');
   }
+
+  void _toggleTheme(bool value) {
+    setState(() {
+      _isDarkMode = value;
+      _themeNotifier.toggleTheme(); // Use the saved reference
+    });
+  }
+
+  @override
+  void dispose() {
+    _userChangesSubscription?.cancel(); // Cancel the listener safely
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    bool isNameMissing = _auth.currentUser?.email == null || _auth.currentUser!.email!.isEmpty;
+    bool isNameMissing =
+        _auth.currentUser?.email == null || _auth.currentUser!.email!.isEmpty;
+    _selectedLanguage = AppState().selectedLanguage;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account'),
+        title: Text(_selectedLanguage == 'Français' ? 'Compte' : 'Account'),
         actions: <Widget>[
           PopupMenuButton<String>(
-            icon: const Icon(Icons.language),
-            itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem<String>(
-                  value: 'English',
-                  child: Text('English'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Arabic',
-                  child: Text('العربية'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'French',
-                  child: Text('Français'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Spanish',
-                  child: Text('Español'),
-                ),
-              ];
-            },
-          ),
+              icon: const Icon(Icons.language),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              itemBuilder: (BuildContext context) {
+                return [
+                  for (String language in ['English', 'Français'])
+                    PopupMenuItem<String>(
+                      value: language,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 16.0),
+                        decoration: BoxDecoration(
+                          color: _selectedLanguage == language
+                              ? Colors.blueAccent
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
+                          boxShadow: [
+                            if (_selectedLanguage == language)
+                              BoxShadow(
+                                color: Colors.blue.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                          ],
+                        ),
+                        child: Text(
+                          language,
+                          style: TextStyle(
+                            fontWeight: _selectedLanguage == language
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: _selectedLanguage == language
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                ];
+              },
+              onSelected: (String value) {
+                if (value == _selectedLanguage) {
+                  // Show a message if the selected language is already active
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.blueAccent,
+                      // Set your desired background color
+                      content: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blueAccent,
+                          // Ensure the background color is consistent
+                          borderRadius:
+                              BorderRadius.circular(12), // Rounded corners
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Text(
+                          _selectedLanguage == 'Français'
+                              ? 'Vous avez déjà sélectionné la langue $value.'
+                              : 'You have already selected $value language.',
+                          style: TextStyle(
+                            color: Colors.white, // Text color
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      duration:
+                          Duration(seconds: 1), // Duration to show the SnackBar
+                    ),
+                  );
+                } else {
+                  _updateLanguage(value); // Update language preference
+                }
+              }),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: themeNotifier.themeMode == ThemeMode.light
-                      ? Colors.black
-                      : Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  themeNotifier.themeMode == ThemeMode.light
-                      ? Icons.nightlight_round
-                      : Icons.wb_sunny,
-                ),
-                onPressed: () {
-                  themeNotifier.toggleTheme();
-                },
-              ),
+            child: DayNightSwitch(
+              value: _isDarkMode,
+              onChanged: _toggleTheme,
+              moonImage: AssetImage('assets/moon.png'),
+              sunImage: AssetImage('assets/sun.png'),
+              sunColor: Colors.yellow,
+              moonColor: Colors.white,
+              dayColor: Colors.blue,
+              nightColor: Color(0xFF393939),
             ),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.settings),
             itemBuilder: (BuildContext context) {
               return [
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'Profile',
-                  child: Text('Profile Settings'),
+                  child: Text(_selectedLanguage == 'Français'
+                      ? 'Paramètres du profil'
+                      : 'Profile Settings'),
                 ),
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'Notifications',
-                  child: Text('Notification Settings'),
+                  child: Text(_selectedLanguage == 'Français'
+                      ? 'Paramètres de notification'
+                      : 'Notification Settings'),
                 ),
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'Privacy',
-                  child: Text('Privacy Settings'),
+                  child: Text(_selectedLanguage == 'Français'
+                      ? 'Paramètres de confidentialité'
+                      : 'Privacy Settings'),
                 ),
               ];
             },
@@ -168,29 +307,40 @@ class _AccountPageState extends State<AccountPage> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: isNameMissing ? Colors.grey : Colors.yellow, // Disable color when name is missing
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                backgroundColor: isNameMissing
+                    ? themeNotifier.themeMode == ThemeMode.dark
+                        ? Colors.grey[800]
+                        : Colors.grey
+                    : Colors.yellow, // Disable color when name is missing
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
               ),
               onPressed: isNameMissing
                   ? null // Disable button if name is missing
                   : () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => EditProfilePage(
-                      onProfileUpdated: _refreshAccountPage, // Pass the refresh function
-                    )),
-                );
-              },
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => EditProfilePage(
+                                  onProfileUpdated:
+                                      _refreshAccountPage, // Pass the refresh function
+                                )),
+                      );
+                    },
               child: Text(
-                'Edit Profile',
+                _selectedLanguage == 'Français'
+                    ? 'Modifier le profil'
+                    : 'Edit Profile',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: isNameMissing
+                      ? themeNotifier.themeMode == ThemeMode.dark
+                          ? Colors.white
+                          : Colors.black
+                      : Colors.black,
                 ),
               ),
             ),
-
-
             Expanded(
               child: ListView(
                 children: [
@@ -201,7 +351,8 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   SizedBox(height: 10),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -219,23 +370,27 @@ class _AccountPageState extends State<AccountPage> {
                                 margin: EdgeInsets.only(right: 10.0),
                                 child: CircleAvatar(
                                   backgroundColor:
-                                  themeNotifier.themeMode == ThemeMode.light
-                                      ? Color(0xFFE1E7FA)
-                                      : Color(0xFF44432D),
+                                      themeNotifier.themeMode == ThemeMode.light
+                                          ? Color(0xFFE1E7FA)
+                                          : Color(0xFF44432D),
                                   child: Icon(
                                     Icons.info_outline_rounded,
-                                    color: themeNotifier.themeMode == ThemeMode.dark
+                                    color: themeNotifier.themeMode ==
+                                            ThemeMode.dark
                                         ? Color(0xFFE3E16B)
                                         : Color(0xFF36399C),
                                   ),
                                 ),
                               ),
                               Text(
-                                'About Us',
+                                _selectedLanguage == 'Français'
+                                    ? 'À propos de nous'
+                                    : 'About Us',
                                 style: TextStyle(
-                                  color: themeNotifier.themeMode == ThemeMode.dark
-                                      ? Colors.white
-                                      : Colors.black,
+                                  color:
+                                      themeNotifier.themeMode == ThemeMode.dark
+                                          ? Colors.white
+                                          : Colors.black,
                                 ),
                               ),
                             ],
@@ -251,7 +406,8 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                     child: GestureDetector(
                       onTap: () => _signOut(),
                       child: Row(
@@ -263,24 +419,28 @@ class _AccountPageState extends State<AccountPage> {
                                 margin: EdgeInsets.only(right: 10.0),
                                 child: CircleAvatar(
                                   backgroundColor:
-                                  themeNotifier.themeMode == ThemeMode.light
-                                      ? Color(0xFFE1E7FA)
-                                      : Color(0xFF44432D),
+                                      themeNotifier.themeMode == ThemeMode.light
+                                          ? Color(0xFFE1E7FA)
+                                          : Color(0xFF44432D),
                                   child: Icon(
                                     Icons.exit_to_app,
-                                    color: themeNotifier.themeMode == ThemeMode.dark
+                                    color: themeNotifier.themeMode ==
+                                            ThemeMode.dark
                                         ? Color(0xFFE3E16B)
                                         : Color(0xFF36399C),
                                   ),
                                 ),
                               ),
                               Text(
-                                'Logout',
+                                _selectedLanguage == 'Français'
+                                    ? 'Se déconnecter'
+                                    : 'Logout',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  color: themeNotifier.themeMode == ThemeMode.light
-                                      ? Colors.redAccent
-                                      : Colors.red,
+                                  color:
+                                      themeNotifier.themeMode == ThemeMode.light
+                                          ? Colors.redAccent
+                                          : Colors.red,
                                 ),
                               ),
                             ],
@@ -304,8 +464,10 @@ class _AccountPageState extends State<AccountPage> {
       future: _getProfileImageUrl(),
       builder: (context, snapshot) {
         String displayName = _fullName ?? _auth.currentUser?.displayName ?? 'A';
-        String initialLetter = displayName.isNotEmpty ? displayName[0].toUpperCase() : 'A';
-        bool isNameMissing = _auth.currentUser?.email == null || _auth.currentUser!.email!.isEmpty;
+        String initialLetter =
+            displayName.isNotEmpty ? displayName[0].toUpperCase() : 'A';
+        bool isNameMissing = _auth.currentUser?.email == null ||
+            _auth.currentUser!.email!.isEmpty;
 
         return Column(
           children: [
@@ -315,40 +477,47 @@ class _AccountPageState extends State<AccountPage> {
                 CircleAvatar(
                   radius: 50.0,
                   backgroundColor: Colors.grey.shade200,
-                  backgroundImage: snapshot.connectionState == ConnectionState.waiting
-                      ? null
-                      : (snapshot.hasData && snapshot.data != null
-                      ? CachedNetworkImageProvider(snapshot.data!)
-                      : null),
+                  backgroundImage:
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? null
+                          : (snapshot.hasData && snapshot.data != null
+                              ? CachedNetworkImageProvider(snapshot.data!)
+                              : null),
                   child: snapshot.connectionState == ConnectionState.waiting
-                      ? const CircularProgressIndicator()
+                      ? Lottie.asset(
+                          'lib/data/Animation - 1727010739635.json',
+                          width: 150,
+                          height: 150,
+                        )
                       : (snapshot.hasData && snapshot.data != null
-                      ? null
-                      : Text(
-                    initialLetter,
-                    style: const TextStyle(
-                        fontSize: 40.0, color: Colors.black),
-                  )),
-                ),
-
-                  GestureDetector(
-                    onTap: () {
-                      if (!isNameMissing) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EditProfilePage(
-                              onProfileUpdated: _refreshAccountPage, // Pass the refresh function
+                          ? null
+                          : Text(
+                              initialLetter,
+                              style: const TextStyle(
+                                  fontSize: 40.0, color: Colors.black),
                             )),
-                        );
-                      } else {
-                        // Optionally, show an alert or message if the name is missing
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Please log in to edit your profile information.')),
-                        );
-                      }
-                    },
-
-                    child: Container(
+                ),
+                GestureDetector(
+                  onTap: () {
+                    if (!isNameMissing) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => EditProfilePage(
+                                  onProfileUpdated:
+                                      _refreshAccountPage, // Pass the refresh function
+                                )),
+                      );
+                    } else {
+                      // Optionally, show an alert or message if the name is missing
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(_selectedLanguage == 'Français'
+                                ? 'Veuillez vous connecter pour modifier vos informations de profil.'
+                                : 'Please log in to edit your profile information.')),
+                      );
+                    }
+                  },
+                  child: Container(
                     padding: const EdgeInsets.all(6.0),
                     decoration: BoxDecoration(
                       color: Colors.yellow,
@@ -365,26 +534,34 @@ class _AccountPageState extends State<AccountPage> {
             ),
             const SizedBox(height: 16.0),
             Text(
-              displayName != 'A' ? displayName : 'User Name',
+              displayName != 'A'
+                  ? displayName
+                  : _selectedLanguage == 'Français'
+                      ? 'Nom d\'utilisateur'
+                      : 'User Name',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-              ),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                  ),
             ),
             Text(
-              _auth.currentUser?.email ?? 'user@example.com',
+              _selectedLanguage == 'Français'
+                  ? (_auth.currentUser?.email ?? 'utilisateur@example.com')
+                  : (_auth.currentUser?.email ?? 'user@example.com'),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 15.0,
-                color: themeNotifier.themeMode == ThemeMode.light
-                    ? Color(0xFF606060)
-                    : Color(0xFFCECECE),
-              ),
+                    fontSize: 15.0,
+                    color: themeNotifier.themeMode == ThemeMode.light
+                        ? Color(0xFF606060)
+                        : Color(0xFFCECECE),
+                  ),
             ),
             if (isNameMissing)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  "It looks like you haven’t signed in yet. Go to Sign In to access your profile.",
+                  _selectedLanguage == 'Français'
+                      ? "Il semble que vous ne vous soyez pas encore connecté. Allez vous connecter pour accéder à votre profil."
+                      : "It looks like you haven’t signed in yet. Go to Sign In to access your profile.",
                   style: const TextStyle(
                     color: Colors.redAccent,
                     fontSize: 14.0,
@@ -401,17 +578,23 @@ class _AccountPageState extends State<AccountPage> {
   Future<String?> _getProfileImageUrl() async {
     final user = _auth.currentUser;
     if (user != null) {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('user_images')
-          .child('${user.uid}.jpg');
-      try {
-        return await storageRef.getDownloadURL();
-      } catch (e) {
-        print('Error getting image URL: $e');
-        return null;
+      final List<String> extensions = ['jpg', 'jpeg', 'png', 'gif']; // Add other formats if needed
+      for (String ext in extensions) {
+        final storageRef = FirebaseStorage.instance
+            .ref()
+            .child('user_images')
+            .child('${user.uid}.$ext');
+        try {
+          return await storageRef.getDownloadURL();
+        } catch (e) {
+          // Continue to try the next extension if the current one fails
+          print(_selectedLanguage == 'Français'
+              ? 'Erreur lors de l\'obtention de l\'URL de l\'image avec .$ext : $e'
+              : 'Error getting image URL with .$ext: $e');
+        }
       }
     }
-    return null;
+    return null; // Return null if none of the extensions work
   }
+
 }

@@ -7,6 +7,7 @@ import '../cubits/favorites_and_cart_state_manager.dart';
 import '../data/product.dart';
 import '../main.dart';
 import '../pages/product_detail_Page.dart';
+import 'day_night_switch.dart';
 
 class CardPage extends StatefulWidget {
   const CardPage({super.key});
@@ -16,6 +17,16 @@ class CardPage extends StatefulWidget {
 }
 
 class _CardPageState extends State<CardPage> {
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
+// Toggle theme mode
+  void _toggleTheme(bool value) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _isDarkMode = value;
+      themeNotifier
+          .toggleTheme(); // Assuming this method switches the theme in your provider
+    });
+  }
   @override
   void initState() {
     super.initState();
@@ -33,25 +44,15 @@ class _CardPageState extends State<CardPage> {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: themeNotifier.themeMode == ThemeMode.light
-                      ? Colors.black
-                      : Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  themeNotifier.themeMode == ThemeMode.light
-                      ? Icons.nightlight_round
-                      : Icons.wb_sunny,
-                ),
-                onPressed: () {
-                  themeNotifier.toggleTheme();
-                },
-              ),
+            child: DayNightSwitch(
+              value: _isDarkMode,
+              onChanged: _toggleTheme,
+              moonImage: AssetImage('assets/moon.png'),
+              sunImage: AssetImage('assets/sun.png'),
+              sunColor: Colors.yellow,
+              moonColor: Colors.white,
+              dayColor: Colors.blue,
+              nightColor: Color(0xFF393939),
             ),
           ),
         ],

@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../main.dart';
+import '../pages/day_night_switch.dart';
 import 'login_page.dart';
 import 'welcome_screen.dart';
 
@@ -26,6 +27,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final _auth = FirebaseAuth.instance;
   final _picker = ImagePicker();
   final _googleSignIn = GoogleSignIn();
+  final selectedLanguage =
+      AppState().selectedLanguage; // Get the current language
   File? _imageFile;
   bool _isPasswordValid = false;
   bool _hasUppercase = false;
@@ -34,6 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _hasSpecialChar = false;
   bool _isLoading = false;
   bool _obscureText = true;
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'EG');
 
   void _togglePasswordVisibility() {
@@ -77,7 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
       final downloadUrl = await storageRef.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Error uploading image: $e');
+      print( selectedLanguage == 'Français' ?'Erreur lors du téléchargement de l\'image: $e':'Error uploading image: $e');
       return null;
     }
   }
@@ -87,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
     final hasLowercase = password.contains(RegExp(r'[a-z]'));
     final hasDigits = password.contains(RegExp(r'[0-9]'));
     final hasSpecialCharacters =
-    password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+        password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
     final isLongEnough = password.length >= 8;
 
     setState(() {
@@ -95,9 +99,7 @@ class _SignUpPageState extends State<SignUpPage> {
       _hasLowercase = hasLowercase;
       _hasDigits = hasDigits;
       _hasSpecialChar = hasSpecialCharacters;
-      _isPasswordValid = isLongEnough &&
-          hasDigits &&
-          hasSpecialCharacters;
+      _isPasswordValid = isLongEnough && hasDigits && hasSpecialCharacters;
     });
 
     return _isPasswordValid;
@@ -109,7 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (_fullNameController.text.isEmpty) {
       _showSnackBar(
         'Warning',
-        'Full name cannot be empty',
+        selectedLanguage == 'Français' ? 'Nom complet ne peut pas être vide' : 'Full name cannot be empty',
         Icon(Icons.error, color: Colors.pink),
       );
       setState(() => _isLoading = false);
@@ -118,7 +120,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (_emailController.text.isEmpty) {
       _showSnackBar(
         'Warning',
-        'Email cannot be empty',
+        selectedLanguage == 'Français' ? 'L\'email ne peut pas être vide' : 'Email cannot be empty',
         Icon(Icons.error, color: Colors.pink),
       );
       setState(() => _isLoading = false);
@@ -127,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (_passwordController.text.isEmpty) {
       _showSnackBar(
         'Warning',
-        'Password cannot be empty',
+        selectedLanguage == 'Français' ? 'Le mot de passe ne peut pas être vide' : 'Password cannot be empty',
         Icon(Icons.error, color: Colors.pink),
       );
       setState(() => _isLoading = false);
@@ -136,7 +138,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (!EmailValidator.validate(_emailController.text)) {
       _showSnackBar(
         'Warning',
-        'Enter a valid email address',
+        selectedLanguage == 'Français' ? 'Entrez une adresse e-mail valide' : 'Enter a valid email address',
         Icon(Icons.error, color: Colors.pink),
       );
       setState(() => _isLoading = false);
@@ -145,7 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (!_isPasswordStrong(_passwordController.text)) {
       _showSnackBar(
         'Warning',
-        'Password does not meet the requirements',
+        selectedLanguage == 'Français' ? 'Le mot de passe ne répond pas aux exigences' : 'Password does not meet the requirements',
         Icon(Icons.error, color: Colors.pink),
       );
       setState(() => _isLoading = false);
@@ -154,7 +156,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -173,18 +175,18 @@ class _SignUpPageState extends State<SignUpPage> {
       await FirebaseDatabase.instance
           .reference()
           .child('users')
+          .child('accountUsers') // Updated path to account users
           .child(userCredential.user!.email!.replaceAll('.', ','))
           .set({
-        'fullName': _fullNameController.text,
-        'phoneNumber': _phoneNumber.phoneNumber?.replaceFirst(RegExp(r'^\+\d{0,1}'), ''), // Remove the country code
+        'fullName': userCredential.user?.displayName ?? 'User',
+        'phoneNumber': _phoneNumber.phoneNumber?.replaceFirst(
+            RegExp(r'^\+\d{0,1}'), ''), // Remove the country code
         'joinTime': ServerValue.timestamp, // Add this line to store server time
       });
 
-
-
       _showSnackBar(
         'Sign up',
-        'Account is successfully created',
+        selectedLanguage == 'Français' ? 'Compte créé avec succès' : 'Account is successfully created',
         Icon(Icons.done, color: Colors.white),
       );
 
@@ -196,26 +198,26 @@ class _SignUpPageState extends State<SignUpPage> {
         if (e.code == 'email-already-in-use') {
           _showSnackBar(
             'Warning',
-            'This account already exists',
+            selectedLanguage == 'Français' ? 'Ce compte existe déjà' : 'This account already exists',
             Icon(Icons.error, color: Colors.white),
           );
         } else if (e.code == 'weak-password') {
           _showSnackBar(
             'Warning',
-            'Password length should be greater than 5',
+            selectedLanguage == 'Français' ? 'Le mot de passe doit avoir plus de 5 caractères' : 'Password length should be greater than 5',
             Icon(Icons.error, color: Colors.white),
           );
         } else {
           _showSnackBar(
             'Warning',
-            'Failed to sign up: ${e.message}',
+            selectedLanguage == 'Français' ? 'Échec de l\'inscription: ${e.message}' : 'Failed to sign up: ${e.message}',
             Icon(Icons.error, color: Colors.white),
           );
         }
       } else {
         _showSnackBar(
           'Warning',
-          'Failed to sign up: $e',
+          selectedLanguage == 'Français' ? 'Échec de l\'inscription: $e' : 'Failed to sign up: $e',
           Icon(Icons.error, color: Colors.white),
         );
       }
@@ -232,7 +234,7 @@ class _SignUpPageState extends State<SignUpPage> {
       if (googleUser == null) return;
 
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -240,7 +242,7 @@ class _SignUpPageState extends State<SignUpPage> {
       );
 
       UserCredential userCredential =
-      await _auth.signInWithCredential(credential);
+          await _auth.signInWithCredential(credential);
 
       if (_imageFile != null) {
         String? imageUrl = await _uploadImage(_imageFile!);
@@ -257,17 +259,18 @@ class _SignUpPageState extends State<SignUpPage> {
       await FirebaseDatabase.instance
           .reference()
           .child('users')
+          .child('accountUsers') // Updated path to account users
           .child(userCredential.user!.email!.replaceAll('.', ','))
           .set({
         'fullName': userCredential.user?.displayName ?? 'User',
-        'phoneNumber': _phoneNumber.phoneNumber?.replaceFirst(RegExp(r'^\+\d{0,1}'), ''), // Remove the country code
+        'phoneNumber': _phoneNumber.phoneNumber?.replaceFirst(
+            RegExp(r'^\+\d{0,1}'), ''), // Remove the country code
         'joinTime': ServerValue.timestamp, // Add this line to store server time
       });
 
-
       _showSnackBar(
         'Sign up',
-        'Successfully signed in with Google',
+        selectedLanguage == 'Français' ? 'Connexion réussie avec Google' : 'Successfully signed in with Google',
         Icon(Icons.done, color: Colors.white),
       );
 
@@ -275,20 +278,30 @@ class _SignUpPageState extends State<SignUpPage> {
     } catch (e) {
       _showSnackBar(
         'Warning',
-        'Failed to sign up with Google: $e',
+        selectedLanguage == 'Français' ? 'Échec de l\'inscription avec Google: $e' : 'Failed to sign up with Google: $e',
         Icon(Icons.error, color: Colors.pink),
       );
     } finally {
       setState(() => _isLoading = false);
     }
   }
+
+  void _toggleTheme(bool value) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _isDarkMode = value;
+      themeNotifier
+          .toggleTheme(); // Assuming this method switches the theme in your provider
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: Text(selectedLanguage == 'Français' ? 'Inscription' : 'Sign Up'),
         leading: BackButton(
           onPressed: () {
             Navigator.of(context).pushReplacement(
@@ -296,6 +309,21 @@ class _SignUpPageState extends State<SignUpPage> {
             );
           },
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: DayNightSwitch(
+              value: _isDarkMode,
+              onChanged: _toggleTheme,
+              moonImage: AssetImage('assets/moon.png'),
+              sunImage: AssetImage('assets/sun.png'),
+              sunColor: Colors.yellow,
+              moonColor: Colors.white,
+              dayColor: Colors.blue,
+              nightColor: Color(0xFF393939),
+            ),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -310,7 +338,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: CircleAvatar(
                       radius: 40,
                       backgroundImage:
-                      _imageFile != null ? FileImage(_imageFile!) : null,
+                          _imageFile != null ? FileImage(_imageFile!) : null,
                       child: _imageFile == null
                           ? Icon(Icons.camera_alt, size: 40)
                           : null,
@@ -319,14 +347,20 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 Center(
                   child: Text(
-                    "Upload your Photo",
+                    selectedLanguage == 'Français'
+                        ? "Télécharger votre photo"
+                        : "Upload your Photo",
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
                 SizedBox(height: 16),
                 TextField(
                   controller: _fullNameController,
-                  decoration: InputDecoration(labelText: 'Full Name'),
+                  decoration: InputDecoration(
+                    labelText: selectedLanguage == 'Français'
+                        ? 'Nom complet'
+                        : 'Full Name',
+                  ),
                 ),
                 SizedBox(height: 16),
                 InternationalPhoneNumberInput(
@@ -344,10 +378,19 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   ignoreBlank: false,
                   autoValidateMode: AutovalidateMode.disabled,
-                  selectorTextStyle: TextStyle(color: Colors.black),
-                  textStyle: TextStyle(color: Colors.black),
+                  selectorTextStyle: TextStyle(
+                    color: themeNotifier.themeMode == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
+                  ),
+                  textStyle: TextStyle(
+                    color: themeNotifier.themeMode == ThemeMode.light
+                        ? Colors.black
+                        : Colors.white,
+                  ),
                   formatInput: false,
-                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                  keyboardType: TextInputType.numberWithOptions(
+                      signed: true, decimal: true),
                   onSaved: (PhoneNumber number) {
                     print('On Saved: $number');
                   },
@@ -355,12 +398,17 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 16),
                 TextField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(
+                    labelText:
+                        selectedLanguage == 'Français' ? 'Email' : 'Email',
+                  ),
                 ),
                 TextField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: selectedLanguage == 'Français'
+                        ? 'Mot de passe'
+                        : 'Password',
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscureText ? Icons.visibility : Icons.visibility_off,
@@ -374,7 +422,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: 16),
                 if (_passwordController.text.isNotEmpty) ...[
                   Text(
-                    'Password Strength:',
+                    selectedLanguage == 'Français'
+                        ? 'Force du mot de passe:'
+                        : 'Password Strength:',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Row(
@@ -384,7 +434,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: _hasDigits ? Colors.green : Colors.red,
                       ),
                       SizedBox(width: 8),
-                      Text('Contains digits'),
+                      Text(selectedLanguage == 'Français'
+                          ? 'Contient des chiffres'
+                          : 'Contains digits'),
                     ],
                   ),
                   Row(
@@ -394,41 +446,53 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: _hasSpecialChar ? Colors.green : Colors.red,
                       ),
                       SizedBox(width: 8),
-                      Text('Contains special characters'),
+                      Text(selectedLanguage == 'Français'
+                          ? 'Contient des caractères spéciaux'
+                          : 'Contains special characters'),
                     ],
                   ),
                   Row(
                     children: [
                       Icon(
                         _hasUppercase ? Icons.check : Icons.warning_rounded,
-                        color: _hasUppercase ? Colors.green : Colors.yellow[700],
+                        color:
+                            _hasUppercase ? Colors.green : Colors.yellow[700],
                       ),
                       SizedBox(width: 8),
-                      Text('Contains uppercase letter'),
+                      Text(selectedLanguage == 'Français'
+                          ? 'Contient des majuscules'
+                          : 'Contains uppercase letter'),
                     ],
                   ),
                   Row(
                     children: [
                       Icon(
                         _hasLowercase ? Icons.check : Icons.warning_rounded,
-                        color: _hasLowercase ? Colors.green : Colors.yellow[700],
+                        color:
+                            _hasLowercase ? Colors.green : Colors.yellow[700],
                       ),
                       SizedBox(width: 8),
-                      Text('Contains lowercase letter'),
+                      Text(selectedLanguage == 'Français'
+                          ? 'Contient des minuscules'
+                          : 'Contains lowercase letter'),
                     ],
                   ),
                 ],
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _signUp,
-                  child: Text('Sign Up'),
+                  child: Text(selectedLanguage == 'Français'
+                      ? 'S\'inscrire'
+                      : 'Sign Up'),
                 ),
                 SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: _signUpWithGoogle,
                   icon: Icon(Icons.login, color: Colors.white),
                   label: Text(
-                    'Sign Up with Google',
+                    selectedLanguage == 'Français'
+                        ? 'S\'inscrire avec Google'
+                        : 'Sign Up with Google',
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -447,7 +511,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 SizedBox(height: 15),
-
                 Align(
                   alignment: Alignment.center,
                   child: GestureDetector(
@@ -460,15 +523,19 @@ class _SignUpPageState extends State<SignUpPage> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Already have an account? ',
+                            text: selectedLanguage == 'Français'
+                                ? 'Vous avez déjà un compte? '
+                                : 'Already have an account? ',
                             style: TextStyle(
                               color: themeNotifier.themeMode == ThemeMode.light
                                   ? Colors.black
                                   : Colors.white,
                             ),
                           ),
-                          const TextSpan(
-                            text: 'Login',
+                          TextSpan(
+                            text: selectedLanguage == 'Français'
+                                ? 'Connexion'
+                                : 'Login',
                             style: TextStyle(color: Colors.red),
                           ),
                         ],
@@ -476,7 +543,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),

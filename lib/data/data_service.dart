@@ -1,31 +1,44 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import '../data/product.dart';
+import 'package:loginpage/data/product.dart';
+
 
 class DataService {
-  Future<List<Product>> loadProducts() async {
+
+
+  Future<List<Product>> loadProducts() async {  // Return non-nullable List<Product>
+
+          print('Loading products from API (English)');
+          return await loadProductsFromApi();
+  }
+
+  Future<List<Product>> loadProductsFromApi() async {
     try {
       final response = await http.get(Uri.parse('https://dummyjson.com/products'));
-
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        if (kDebugMode) {
-          print('Response JSON: $jsonResponse');
-        } // Log the response
         final products = jsonResponse['products'] as List;
         return products.map((data) => Product.fromJson(data)).toList();
       } else {
-        if (kDebugMode) {
-          print('Failed to load products: ${response.statusCode}');
-        } // Log error
         throw Exception('Failed to load products');
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error: ${e.toString()}');
-      } // Log the exception
       throw Exception('Failed to load products: ${e.toString()}');
     }
   }
+
+  Future<List<Product>> loadProductsFromLocal() async {
+    try {
+      final jsonString = await rootBundle.loadString('lib/data/Translated_French_Products.json');
+      final jsonResponse = json.decode(jsonString);
+      final products = jsonResponse['products'] as List;
+      return products.map((data) => Product.fromJson(data)).toList();
+    } catch (e) {
+      throw Exception('Failed to load local products: ${e.toString()}');
+    }
+  }
+
 }
+
+

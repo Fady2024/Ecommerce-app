@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import '../data/product.dart';
 import '../main.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:async';
+import 'day_night_switch.dart';
 import 'product_details_pages/PriceSection.dart';
 import 'product_details_pages/ReviewWidget.dart';
 import 'product_details_pages/product_detail_header.dart';
@@ -30,7 +32,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   double _rating = 5.0; // Default rating
-
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   late final DatabaseReference _commentsRef;
   StreamSubscription<DatabaseEvent>? _commentsSubscription;
   List<Map<String, dynamic>> _comments = [];
@@ -41,7 +43,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     _commentsRef = FirebaseDatabase.instance.ref('comments');
     _subscribeToComments();
   }
-
+  // Toggle theme mode
+  void _toggleTheme(bool value) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _isDarkMode = value;
+      themeNotifier
+          .toggleTheme(); // Assuming this method switches the theme in your provider
+    });
+  }
   void _subscribeToComments() {
     _commentsSubscription = _commentsRef
         .orderByChild('productId')
@@ -79,44 +89,50 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   void _addToCart(Product product) {
-    final cubit = context.read<FadyCardCubit>();
+    final user = FirebaseAuth.instance.currentUser; // Get current user
+    if (user != null) {
+      final cubit = context.read<FadyCardCubit>();
+      final cartItem = cubit.cartItems.firstWhere(
+            (item) => item['item'] == product,
+        orElse: () => {'quantity': 0},
+      );
+      final int quantityInCart = cartItem['quantity'] as int;
+      final int remainingStock = product.stock - quantityInCart;
 
-    final cartItem = cubit.cartItems.firstWhere(
-          (item) => item['item'] == product,
-      orElse: () => {'quantity': 0},
-    );
-    final int quantityInCart = cartItem['quantity'] as int;
-    final int remainingStock = product.stock - quantityInCart;
-
-    if (cubit.cartItems.any((item) => item['item'] == product)) {
+      if (remainingStock > 0) {
+        cubit.addItemToCart(product.id - 1); // Pass the product ID - 1
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Product added to cart!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No more stock available for this product!'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            remainingStock > 0
-                ? 'This product is already in your cart!'
-                : 'No more stock available for this product!',
-            style: const TextStyle(color: Colors.black),
+          content: const Text(
+            '🌟 You need to be logged in to add items to your cart! 🛒✨ Please sign up or log in to start shopping and enjoy exclusive benefits! 🎉',
+            style: TextStyle(fontSize: 16), // Adjust font size if needed
           ),
-          backgroundColor: remainingStock > 0 ? const Color(0xFFE7E725) : Colors.red,
-        ),
-      );
-    } else if (remainingStock > 0) {
-      cubit.addItemToCart(product.id - 1); // Pass the product ID - 1
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Product added to cart!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No more stock available for this product!'),
-          backgroundColor: Colors.red,
+          backgroundColor: const Color(0xFF175E19), // Use a solid color for background
+          duration: const Duration(seconds: 2), // Set duration to 1 second
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Rounded corners
+          ),
+          behavior: SnackBarBehavior.floating, // Make the SnackBar float above the content
         ),
       );
     }
   }
+
 
   void _toggleFavorite(Product product) {
     final cubit = context.read<FadyCardCubit>();
@@ -200,7 +216,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final double originalPrice = widget.product.price;
     final double discountPercentage = widget.product.discountPercentage;
     final double discountedPrice = originalPrice * (1 - discountPercentage / 100);
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -221,25 +236,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: themeNotifier.themeMode == ThemeMode.light
-                      ? Colors.black
-                      : Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  themeNotifier.themeMode == ThemeMode.light
-                      ? Icons.nightlight_round
-                      : Icons.wb_sunny,
-                ),
-                onPressed: () {
-                  themeNotifier.toggleTheme();
-                },
-              ),
+            child: DayNightSwitch(
+              value: _isDarkMode,
+              onChanged: _toggleTheme,
+              moonImage: AssetImage('assets/moon.png'),
+              sunImage: AssetImage('assets/sun.png'),
+              sunColor: Colors.yellow,
+              moonColor: Colors.white,
+              dayColor: Colors.blue,
+              nightColor: Color(0xFF393939),
             ),
           ),
         ],

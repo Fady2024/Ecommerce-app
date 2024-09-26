@@ -1,0 +1,1803 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "Mascara Essence Lash Princess",
+      "description": "Le mascara Essence Lash Princess est un mascara très apprécié pour ses effets volumateurs et allongeants. Obtenez des cils spectaculaires grâce à cette formule longue tenue et sans cruauté.",
+      "category": "beauté",
+      "price": 9.99,
+      "discountPercentage": 7.17,
+      "rating": 4.94,
+      "stock": 5,
+      "tags": [
+        "beauty",
+        "mascara"
+      ],
+      "brand": "Essence",
+      "sku": "RCH45Q1A",
+      "weight": 2,
+      "dimensions": {
+        "width": 23.17,
+        "height": 14.43,
+        "depth": 28.01
+      },
+      "warrantyInformation": "Garantie 1 mois",
+      "shippingInformation": "Expédié dans 1 mois",
+      "availabilityStatus": "Faible stock",
+      "reviews": [
+        {
+          "rating": 2,
+          "comment": "Très mécontent de mon achat !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "John Doe",
+          "reviewerEmail": "john.doe@x.dummyjson.com"
+        },
+        {
+          "rating": 2,
+          "comment": "Pas comme décrit !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Nolan Gonzalez",
+          "reviewerEmail": "nolan.gonzalez@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Scarlett Wright",
+          "reviewerEmail": "scarlett.wright@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 24,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.618Z",
+        "updatedAt": "2024-05-23T08:56:21.618Z",
+        "barcode": "9164035109868",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png"
+    },
+    {
+      "id": 2,
+      "title": "Palette de fards à paupières avec miroir",
+      "description": "La palette de fards à paupières avec miroir offre une gamme polyvalente de nuances de fards à paupières pour créer des looks époustouflants. Avec un miroir intégré, elle est pratique pour l'application du maquillage en déplacement.",
+      "category": "beauté",
+      "price": 19.99,
+      "discountPercentage": 5.5,
+      "rating": 3.28,
+      "stock": 44,
+      "tags": [
+        "beauty",
+        "eyeshadow"
+      ],
+      "brand": "Glamour Beauty",
+      "sku": "MVCFH27F",
+      "weight": 3,
+      "dimensions": {
+        "width": 12.42,
+        "height": 8.63,
+        "depth": 29.13
+      },
+      "warrantyInformation": "Garantie 1 an",
+      "shippingInformation": "Expédié dans 2 semaines",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Liam Garcia",
+          "reviewerEmail": "liam.garcia@x.dummyjson.com"
+        },
+        {
+          "rating": 1,
+          "comment": "Très déçu !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Nora Russell",
+          "reviewerEmail": "nora.russell@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très impressionné !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Elena Baker",
+          "reviewerEmail": "elena.baker@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 32,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.618Z",
+        "updatedAt": "2024-05-23T08:56:21.618Z",
+        "barcode": "2817839095220",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/beauty/Eyeshadow%20Palette%20with%20Mirror/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Eyeshadow%20Palette%20with%20Mirror/thumbnail.png"
+    },
+    {
+      "id": 3,
+      "title": "Bidon de poudre",
+      "description": "Le Powder Canister est une poudre fixatrice finement moulue conçue pour fixer le maquillage et contrôler la brillance. Avec une formule légère et translucide, elle offre un fini lisse et mat.",
+      "category": "beauté",
+      "price": 14.99,
+      "discountPercentage": 18.14,
+      "rating": 3.82,
+      "stock": 59,
+      "tags": [
+        "beauty",
+        "face powder"
+      ],
+      "brand": "Velvet Touch",
+      "sku": "9EN8WLT2",
+      "weight": 8,
+      "dimensions": {
+        "width": 24.16,
+        "height": 10.7,
+        "depth": 11.07
+      },
+      "warrantyInformation": "Garantie de 2 ans",
+      "shippingInformation": "Expédié sous 1 à 2 jours ouvrables",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Ethan Thompson",
+          "reviewerEmail": "ethan.thompson@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellent rapport qualité/prix !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Levi Hicks",
+          "reviewerEmail": "levi.hicks@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très impressionné !",
+          "date": "2024-05-23T08:56:21.618Z",
+          "reviewerName": "Hazel Gardner",
+          "reviewerEmail": "hazel.gardner@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 60 jours",
+      "minimumOrderQuantity": 25,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.618Z",
+        "updatedAt": "2024-05-23T08:56:21.618Z",
+        "barcode": "0516267971277",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/beauty/Powder%20Canister/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Powder%20Canister/thumbnail.png"
+    },
+    {
+      "id": 4,
+      "title": "Rouge à lèvres rouge",
+      "description": "Le rouge à lèvres rouge est un choix classique et audacieux pour ajouter une touche de couleur à vos lèvres. Avec une formule crémeuse et pigmentée, il offre un fini vibrant et durable.",
+      "category": "beauté",
+      "price": 12.99,
+      "discountPercentage": 19.03,
+      "rating": 2.51,
+      "stock": 68,
+      "tags": [
+        "beauty",
+        "lipstick"
+      ],
+      "brand": "Chic Cosmetics",
+      "sku": "O5IF1NTA",
+      "weight": 5,
+      "dimensions": {
+        "width": 14.37,
+        "height": 13.94,
+        "depth": 14.6
+      },
+      "warrantyInformation": "Garantie à vie",
+      "shippingInformation": "Expédié dans 2 semaines",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Excellent produit !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Leo Rivera",
+          "reviewerEmail": "leo.rivera@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Oscar Powers",
+          "reviewerEmail": "oscar.powers@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Carter Rivera",
+          "reviewerEmail": "carter.rivera@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 90 jours",
+      "minimumOrderQuantity": 6,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.619Z",
+        "updatedAt": "2024-05-23T08:56:21.619Z",
+        "barcode": "9444582199406",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/beauty/Red%20Lipstick/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Red%20Lipstick/thumbnail.png"
+    },
+    {
+      "id": 5,
+      "title": "Vernis à ongles rouge",
+      "description": "Le vernis à ongles rouge offre une teinte rouge riche et brillante pour des ongles éclatants et brillants. Grâce à sa formule à séchage rapide, il offre une finition de qualité professionnelle à domicile.",
+      "category": "beauté",
+      "price": 8.99,
+      "discountPercentage": 2.46,
+      "rating": 3.91,
+      "stock": 71,
+      "tags": [
+        "beauty",
+        "nail polish"
+      ],
+      "brand": "Nail Couture",
+      "sku": "YUIIIP4W",
+      "weight": 9,
+      "dimensions": {
+        "width": 8.11,
+        "height": 10.89,
+        "depth": 29.06
+      },
+      "warrantyInformation": "Garantie 1 an",
+      "shippingInformation": "Expédié dans 1 semaine",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Leo Rivera",
+          "reviewerEmail": "leo.rivera@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Excellent produit !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Evan Reed",
+          "reviewerEmail": "evan.reed@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Hautement recommandé !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Evelyn Sanchez",
+          "reviewerEmail": "evelyn.sanchez@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Aucune politique de retour",
+      "minimumOrderQuantity": 46,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.619Z",
+        "updatedAt": "2024-05-23T08:56:21.619Z",
+        "barcode": "3212847902461",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/beauty/Red%20Nail%20Polish/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Red%20Nail%20Polish/thumbnail.png"
+    },
+    {
+      "id": 6,
+      "title": "Calvin Klein CK One",
+      "description": "CK One de Calvin Klein est un parfum unisexe classique, connu pour son parfum frais et propre. C'est un parfum polyvalent qui convient à un usage quotidien.",
+      "category": "parfums",
+      "price": 49.99,
+      "discountPercentage": 0.32,
+      "rating": 4.85,
+      "stock": 17,
+      "tags": [
+        "fragrances",
+        "perfumes"
+      ],
+      "brand": "Calvin Klein",
+      "sku": "DZM2JQZE",
+      "weight": 5,
+      "dimensions": {
+        "width": 11.53,
+        "height": 14.44,
+        "depth": 6.81
+      },
+      "warrantyInformation": "Garantie de 5 ans",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Excellent rapport qualité/prix !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Sophia Brown",
+          "reviewerEmail": "sophia.brown@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Très déçu !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Madison Collins",
+          "reviewerEmail": "madison.collins@x.dummyjson.com"
+        },
+        {
+          "rating": 1,
+          "comment": "Mauvaise qualité !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Maya Reed",
+          "reviewerEmail": "maya.reed@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Aucune politique de retour",
+      "minimumOrderQuantity": 20,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.619Z",
+        "updatedAt": "2024-05-23T08:56:21.619Z",
+        "barcode": "2210136215089",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/fragrances/Calvin%20Klein%20CK%20One/1.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Calvin%20Klein%20CK%20One/2.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Calvin%20Klein%20CK%20One/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/fragrances/Calvin%20Klein%20CK%20One/thumbnail.png"
+    },
+    {
+      "id": 7,
+      "title": "Eau de toilette Coco Noir de Chanel",
+      "description": "Coco Noir de Chanel est un parfum élégant et mystérieux, aux notes de pamplemousse, de rose et de bois de santal. Parfait pour les occasions en soirée.",
+      "category": "parfums",
+      "price": 129.99,
+      "discountPercentage": 18.64,
+      "rating": 2.76,
+      "stock": 41,
+      "tags": [
+        "fragrances",
+        "perfumes"
+      ],
+      "brand": "Chanel",
+      "sku": "K71HBCGS",
+      "weight": 4,
+      "dimensions": {
+        "width": 21.27,
+        "height": 28,
+        "depth": 11.89
+      },
+      "warrantyInformation": "Garantie 1 semaine",
+      "shippingInformation": "Expédié dans 1 mois",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 1,
+          "comment": "Produit décevant !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Lincoln Kelly",
+          "reviewerEmail": "lincoln.kelly@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellent produit !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Lincoln Kelly",
+          "reviewerEmail": "lincoln.kelly@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Lucas Allen",
+          "reviewerEmail": "lucas.allen@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 60 jours",
+      "minimumOrderQuantity": 5,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.619Z",
+        "updatedAt": "2024-05-23T08:56:21.619Z",
+        "barcode": "1435582999795",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/fragrances/Chanel%20Coco%20Noir%20Eau%20De/1.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Chanel%20Coco%20Noir%20Eau%20De/2.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Chanel%20Coco%20Noir%20Eau%20De/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/fragrances/Chanel%20Coco%20Noir%20Eau%20De/thumbnail.png"
+    },
+    {
+      "id": 8,
+      "title": "Dior J'adore",
+      "description": "J'adore de Dior est un parfum luxueux et floral, connu pour son mélange d'ylang-ylang, de rose et de jasmin. Il incarne la féminité et la sophistication.",
+      "category": "parfums",
+      "price": 89.99,
+      "discountPercentage": 17.44,
+      "rating": 3.31,
+      "stock": 91,
+      "tags": [
+        "fragrances",
+        "perfumes"
+      ],
+      "brand": "Dior",
+      "sku": "E70NB03B",
+      "weight": 10,
+      "dimensions": {
+        "width": 21.51,
+        "height": 7,
+        "depth": 26.51
+      },
+      "warrantyInformation": "Garantie à vie",
+      "shippingInformation": "Expédié dans 2 semaines",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Expédition rapide!",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Zoe Nicholson",
+          "reviewerEmail": "zoe.nicholson@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Addison Wright",
+          "reviewerEmail": "addison.wright@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Clara Berry",
+          "reviewerEmail": "clara.berry@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 7 jours",
+      "minimumOrderQuantity": 8,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.619Z",
+        "updatedAt": "2024-05-23T08:56:21.619Z",
+        "barcode": "0887083199279",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/fragrances/Dior%20J'adore/1.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Dior%20J'adore/2.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Dior%20J'adore/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/fragrances/Dior%20J'adore/thumbnail.png"
+    },
+    {
+      "id": 9,
+      "title": "Eau de toilette Dolce Shine",
+      "description": "Dolce Shine de Dolce & Gabbana est un parfum vibrant et fruité, aux notes de mangue, de jasmin et de bois blonds. C'est un parfum joyeux et jeune.",
+      "category": "parfums",
+      "price": 69.99,
+      "discountPercentage": 11.47,
+      "rating": 2.68,
+      "stock": 3,
+      "tags": [
+        "fragrances",
+        "perfumes"
+      ],
+      "brand": "Dolce & Gabbana",
+      "sku": "1NBFK980",
+      "weight": 5,
+      "dimensions": {
+        "width": 17,
+        "height": 24.57,
+        "depth": 13.3
+      },
+      "warrantyInformation": "Garantie de 5 ans",
+      "shippingInformation": "Expédié sous 1 à 2 jours ouvrables",
+      "availabilityStatus": "Faible stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Xavier Wright",
+          "reviewerEmail": "xavier.wright@x.dummyjson.com"
+        },
+        {
+          "rating": 1,
+          "comment": "Mauvaise qualité !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Mila Hernandez",
+          "reviewerEmail": "mila.hernandez@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.619Z",
+          "reviewerName": "Sophia Brown",
+          "reviewerEmail": "sophia.brown@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 9,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.619Z",
+        "updatedAt": "2024-05-23T08:56:21.619Z",
+        "barcode": "1939383392674",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/fragrances/Dolce%20Shine%20Eau%20de/1.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Dolce%20Shine%20Eau%20de/2.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Dolce%20Shine%20Eau%20de/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/fragrances/Dolce%20Shine%20Eau%20de/thumbnail.png"
+    },
+    {
+      "id": 10,
+      "title": "Eau de toilette Gucci Bloom",
+      "description": "Gucci Bloom de Gucci est un parfum floral et captivant, aux notes de tubéreuse, de jasmin et de vigne vierge. C'est un parfum moderne et romantique.",
+      "category": "parfums",
+      "price": 79.99,
+      "discountPercentage": 8.9,
+      "rating": 2.69,
+      "stock": 93,
+      "tags": [
+        "fragrances",
+        "perfumes"
+      ],
+      "brand": "Gucci",
+      "sku": "FFKZ6HOF",
+      "weight": 10,
+      "dimensions": {
+        "width": 22.28,
+        "height": 17.81,
+        "depth": 27.18
+      },
+      "warrantyInformation": "Aucune garantie",
+      "shippingInformation": "Expédié dans 2 semaines",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Excellent rapport qualité/prix !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Aria Parker",
+          "reviewerEmail": "aria.parker@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Natalie Harris",
+          "reviewerEmail": "natalie.harris@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Expédition rapide!",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Ava Harris",
+          "reviewerEmail": "ava.harris@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Aucune politique de retour",
+      "minimumOrderQuantity": 10,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "8232190382069",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/fragrances/Gucci%20Bloom%20Eau%20de/1.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Gucci%20Bloom%20Eau%20de/2.png",
+        "https://cdn.dummyjson.com/products/images/fragrances/Gucci%20Bloom%20Eau%20de/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/fragrances/Gucci%20Bloom%20Eau%20de/thumbnail.png"
+    },
+    {
+      "id": 11,
+      "title": "Lit Colombo Annibale",
+      "description": "Le lit Annibale Colombo est un cadre de lit luxueux et élégant, fabriqué avec des matériaux de haute qualité pour une chambre confortable et élégante.",
+      "category": "meubles",
+      "price": 1899.99,
+      "discountPercentage": 0.29,
+      "rating": 4.14,
+      "stock": 47,
+      "tags": [
+        "furniture",
+        "beds"
+      ],
+      "brand": "Annibale Colombo",
+      "sku": "4KMDTZWF",
+      "weight": 3,
+      "dimensions": {
+        "width": 28.75,
+        "height": 26.88,
+        "depth": 24.47
+      },
+      "warrantyInformation": "Garantie de 2 ans",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Excellent rapport qualité/prix !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Julian Newton",
+          "reviewerEmail": "julian.newton@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Madison Collins",
+          "reviewerEmail": "madison.collins@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Clara Berry",
+          "reviewerEmail": "clara.berry@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 7 jours",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "7113807059215",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Bed/1.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Bed/2.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Bed/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Bed/thumbnail.png"
+    },
+    {
+      "id": 12,
+      "title": "Canapé Colombo Annibale",
+      "description": "Le canapé Annibale Colombo est une option d'assise sophistiquée et confortable, avec un design exquis et un rembourrage haut de gamme pour votre salon.",
+      "category": "meubles",
+      "price": 2499.99,
+      "discountPercentage": 18.54,
+      "rating": 3.08,
+      "stock": 16,
+      "tags": [
+        "furniture",
+        "sofas"
+      ],
+      "brand": "Annibale Colombo",
+      "sku": "LUU95CQP",
+      "weight": 3,
+      "dimensions": {
+        "width": 20.97,
+        "height": 19.11,
+        "depth": 25.81
+      },
+      "warrantyInformation": "Garantie 1 mois",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Tyler Davis",
+          "reviewerEmail": "tyler.davis@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Hannah Robinson",
+          "reviewerEmail": "hannah.robinson@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Gaspillage d'argent !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Madison Collins",
+          "reviewerEmail": "madison.collins@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 7 jours",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "0426785817074",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/1.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/2.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/thumbnail.png"
+    },
+    {
+      "id": 13,
+      "title": "Table de chevet en cerisier africain",
+      "description": "La table de chevet en cerisier africain est un ajout élégant et fonctionnel à votre chambre, offrant un espace de rangement pratique et une touche d'élégance.",
+      "category": "meubles",
+      "price": 299.99,
+      "discountPercentage": 9.58,
+      "rating": 4.48,
+      "stock": 16,
+      "tags": [
+        "furniture",
+        "bedside tables"
+      ],
+      "brand": "Furniture Co.",
+      "sku": "OWPLTZYX",
+      "weight": 10,
+      "dimensions": {
+        "width": 25.43,
+        "height": 20.2,
+        "depth": 24.95
+      },
+      "warrantyInformation": "Garantie de 6 mois",
+      "shippingInformation": "Expédié sous 1 à 2 jours ouvrables",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "John Doe",
+          "reviewerEmail": "john.doe@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Hautement recommandé !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Avery Carter",
+          "reviewerEmail": "avery.carter@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Evelyn Sanchez",
+          "reviewerEmail": "evelyn.sanchez@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Aucune politique de retour",
+      "minimumOrderQuantity": 5,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "2913244159666",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/furniture/Bedside%20Table%20African%20Cherry/1.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Bedside%20Table%20African%20Cherry/2.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Bedside%20Table%20African%20Cherry/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/furniture/Bedside%20Table%20African%20Cherry/thumbnail.png"
+    },
+    {
+      "id": 14,
+      "title": "Président exécutif de la conférence Knoll Saarinen",
+      "description": "La chaise de conférence exécutive Knoll Saarinen est une chaise moderne et ergonomique, parfaite pour votre bureau ou votre salle de conférence avec son design intemporel.",
+      "category": "meubles",
+      "price": 499.99,
+      "discountPercentage": 15.23,
+      "rating": 4.11,
+      "stock": 47,
+      "tags": [
+        "furniture",
+        "office chairs"
+      ],
+      "brand": "Knoll",
+      "sku": "RKHVJ4FE",
+      "weight": 3,
+      "dimensions": {
+        "width": 16.59,
+        "height": 21.46,
+        "depth": 29.07
+      },
+      "warrantyInformation": "Garantie à vie",
+      "shippingInformation": "Expédié sous 3 à 5 jours ouvrés",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Leah Gutierrez",
+          "reviewerEmail": "leah.gutierrez@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Nolan Gonzalez",
+          "reviewerEmail": "nolan.gonzalez@x.dummyjson.com"
+        },
+        {
+          "rating": 2,
+          "comment": "Gaspillage d'argent !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Stella Morris",
+          "reviewerEmail": "stella.morris@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 5,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "0726316339746",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/furniture/Knoll%20Saarinen%20Executive%20Conference%20Chair/1.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Knoll%20Saarinen%20Executive%20Conference%20Chair/2.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Knoll%20Saarinen%20Executive%20Conference%20Chair/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/furniture/Knoll%20Saarinen%20Executive%20Conference%20Chair/thumbnail.png"
+    },
+    {
+      "id": 15,
+      "title": "Lavabo de salle de bain en bois avec miroir",
+      "description": "Le lavabo de salle de bain en bois avec miroir est un ajout unique et élégant à votre salle de bain, comprenant un comptoir de lavabo en bois et un miroir assorti.",
+      "category": "meubles",
+      "price": 799.99,
+      "discountPercentage": 11.22,
+      "rating": 3.26,
+      "stock": 95,
+      "tags": [
+        "furniture",
+        "bathroom"
+      ],
+      "brand": "Bath Trends",
+      "sku": "7OLTIEVO",
+      "weight": 6,
+      "dimensions": {
+        "width": 7.32,
+        "height": 22.64,
+        "depth": 12.37
+      },
+      "warrantyInformation": "Garantie de 6 mois",
+      "shippingInformation": "Expédié sous 3 à 5 jours ouvrés",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Hautement recommandé !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Charlotte Lopez",
+          "reviewerEmail": "charlotte.lopez@x.dummyjson.com"
+        },
+        {
+          "rating": 1,
+          "comment": "Je ne recommanderais pas !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "William Gonzalez",
+          "reviewerEmail": "william.gonzalez@x.dummyjson.com"
+        },
+        {
+          "rating": 2,
+          "comment": "Ne vaut pas son prix !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Ava Harrison",
+          "reviewerEmail": "ava.harrison@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 7 jours",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "7839797529453",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/furniture/Wooden%20Bathroom%20Sink%20With%20Mirror/1.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Wooden%20Bathroom%20Sink%20With%20Mirror/2.png",
+        "https://cdn.dummyjson.com/products/images/furniture/Wooden%20Bathroom%20Sink%20With%20Mirror/3.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/furniture/Wooden%20Bathroom%20Sink%20With%20Mirror/thumbnail.png"
+    },
+    {
+      "id": 16,
+      "title": "Pomme",
+      "description": "Pommes fraîches et croquantes, parfaites pour grignoter ou à incorporer dans diverses recettes.",
+      "category": "épiceries",
+      "price": 1.99,
+      "discountPercentage": 1.97,
+      "rating": 2.96,
+      "stock": 9,
+      "tags": [
+        "fruits"
+      ],
+      "sku": "QTROUV79",
+      "weight": 8,
+      "dimensions": {
+        "width": 8.29,
+        "height": 5.58,
+        "depth": 12.41
+      },
+      "warrantyInformation": "Garantie de 2 ans",
+      "shippingInformation": "Expédié dans 2 semaines",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Excellent produit !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Logan Lee",
+          "reviewerEmail": "logan.lee@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellent produit !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Elena Long",
+          "reviewerEmail": "elena.long@x.dummyjson.com"
+        },
+        {
+          "rating": 1,
+          "comment": "Pas comme décrit !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Grayson Coleman",
+          "reviewerEmail": "grayson.coleman@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 60 jours",
+      "minimumOrderQuantity": 44,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "2517819903837",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Apple/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Apple/thumbnail.png"
+    },
+    {
+      "id": 17,
+      "title": "Steak de boeuf",
+      "description": "Steak de bœuf de haute qualité, idéal pour griller ou cuire à votre niveau de cuisson préféré.",
+      "category": "épiceries",
+      "price": 12.99,
+      "discountPercentage": 17.99,
+      "rating": 2.83,
+      "stock": 96,
+      "tags": [
+        "meat"
+      ],
+      "sku": "BWWA2MSO",
+      "weight": 9,
+      "dimensions": {
+        "width": 23.35,
+        "height": 13.48,
+        "depth": 26.4
+      },
+      "warrantyInformation": "Garantie 1 mois",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Ethan Martinez",
+          "reviewerEmail": "ethan.martinez@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Produit décevant !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Owen Fisher",
+          "reviewerEmail": "owen.fisher@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Scarlett Wright",
+          "reviewerEmail": "scarlett.wright@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 90 jours",
+      "minimumOrderQuantity": 21,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "8335515097879",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Beef%20Steak/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Beef%20Steak/thumbnail.png"
+    },
+    {
+      "id": 18,
+      "title": "Nourriture pour chat",
+      "description": "Nourriture nutritive pour chats formulée pour répondre aux besoins alimentaires de votre ami félin.",
+      "category": "épiceries",
+      "price": 8.99,
+      "discountPercentage": 9.57,
+      "rating": 2.88,
+      "stock": 13,
+      "tags": [
+        "pet supplies",
+        "cat food"
+      ],
+      "sku": "C3F8QN6O",
+      "weight": 9,
+      "dimensions": {
+        "width": 15.4,
+        "height": 13.97,
+        "depth": 25.13
+      },
+      "warrantyInformation": "Garantie de 3 mois",
+      "shippingInformation": "Expédié sous 1 à 2 jours ouvrables",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Mateo Bennett",
+          "reviewerEmail": "mateo.bennett@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Aurora Barnes",
+          "reviewerEmail": "aurora.barnes@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Excellent rapport qualité/prix !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Ellie Stewart",
+          "reviewerEmail": "ellie.stewart@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 7 jours",
+      "minimumOrderQuantity": 48,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "5503491330693",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Cat%20Food/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Cat%20Food/thumbnail.png"
+    },
+    {
+      "id": 19,
+      "title": "Viande de poulet",
+      "description": "Viande de poulet fraîche et tendre, adaptée à diverses préparations culinaires.",
+      "category": "épiceries",
+      "price": 9.99,
+      "discountPercentage": 10.46,
+      "rating": 4.61,
+      "stock": 69,
+      "tags": [
+        "meat"
+      ],
+      "sku": "G5YEHW7B",
+      "weight": 7,
+      "dimensions": {
+        "width": 15.96,
+        "height": 29.24,
+        "depth": 26.25
+      },
+      "warrantyInformation": "Garantie à vie",
+      "shippingInformation": "Expédié dans 1 mois",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Sophia Jones",
+          "reviewerEmail": "sophia.jones@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Excellent rapport qualité/prix !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Maya Reed",
+          "reviewerEmail": "maya.reed@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Hautement recommandé !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Harper Turner",
+          "reviewerEmail": "harper.turner@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 7 jours",
+      "minimumOrderQuantity": 46,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "0966223559510",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Chicken%20Meat/1.png",
+        "https://cdn.dummyjson.com/products/images/groceries/Chicken%20Meat/2.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Chicken%20Meat/thumbnail.png"
+    },
+    {
+      "id": 20,
+      "title": "Huile de cuisson",
+      "description": "Huile de cuisson polyvalente adaptée à la friture, aux sautés et à diverses applications culinaires.",
+      "category": "épiceries",
+      "price": 4.99,
+      "discountPercentage": 18.89,
+      "rating": 4.01,
+      "stock": 22,
+      "tags": [
+        "cooking essentials"
+      ],
+      "sku": "Q6ZP1UY8",
+      "weight": 8,
+      "dimensions": {
+        "width": 8.18,
+        "height": 27.45,
+        "depth": 27.88
+      },
+      "warrantyInformation": "Garantie à vie",
+      "shippingInformation": "Expédié dans 1 mois",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Mason Parker",
+          "reviewerEmail": "mason.parker@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Mauvaise qualité !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Jonathan Pierce",
+          "reviewerEmail": "jonathan.pierce@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Alexander Hernandez",
+          "reviewerEmail": "alexander.hernandez@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 60 jours",
+      "minimumOrderQuantity": 2,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "6707669443381",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Cooking%20Oil/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Cooking%20Oil/thumbnail.png"
+    },
+    {
+      "id": 21,
+      "title": "Concombre",
+      "description": "Concombres croquants et hydratants, idéaux pour les salades, les collations ou comme accompagnement rafraîchissant.",
+      "category": "épiceries",
+      "price": 1.49,
+      "discountPercentage": 11.44,
+      "rating": 4.71,
+      "stock": 22,
+      "tags": [
+        "vegetables"
+      ],
+      "sku": "6KGF2K6Z",
+      "weight": 9,
+      "dimensions": {
+        "width": 11.04,
+        "height": 20.5,
+        "depth": 8.18
+      },
+      "warrantyInformation": "Garantie de 5 ans",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Elijah Hill",
+          "reviewerEmail": "elijah.hill@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Expédition rapide!",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Liam Garcia",
+          "reviewerEmail": "liam.garcia@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Ella Cook",
+          "reviewerEmail": "ella.cook@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 7,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "2597004869708",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Cucumber/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Cucumber/thumbnail.png"
+    },
+    {
+      "id": 22,
+      "title": "Nourriture pour chien",
+      "description": "Nourriture pour chiens spécialement formulée conçue pour fournir les nutriments essentiels à votre compagnon canin.",
+      "category": "épiceries",
+      "price": 10.99,
+      "discountPercentage": 18.15,
+      "rating": 2.74,
+      "stock": 40,
+      "tags": [
+        "pet supplies",
+        "dog food"
+      ],
+      "sku": "A6QRCH37",
+      "weight": 2,
+      "dimensions": {
+        "width": 29.39,
+        "height": 29.77,
+        "depth": 20.54
+      },
+      "warrantyInformation": "Garantie 1 an",
+      "shippingInformation": "Expédié dans 1 mois",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très impressionné !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Leo Rivera",
+          "reviewerEmail": "leo.rivera@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Hautement recommandé !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Alexander Jones",
+          "reviewerEmail": "alexander.jones@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Addison Wright",
+          "reviewerEmail": "addison.wright@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 90 jours",
+      "minimumOrderQuantity": 29,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "7957222289508",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Dog%20Food/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Dog%20Food/thumbnail.png"
+    },
+    {
+      "id": 23,
+      "title": "Œufs",
+      "description": "Les œufs frais, un ingrédient polyvalent pour la pâtisserie, la cuisine ou le petit-déjeuner.",
+      "category": "épiceries",
+      "price": 2.99,
+      "discountPercentage": 5.8,
+      "rating": 4.46,
+      "stock": 10,
+      "tags": [
+        "dairy"
+      ],
+      "sku": "YA617RI7",
+      "weight": 4,
+      "dimensions": {
+        "width": 12.3,
+        "height": 10.99,
+        "depth": 15.53
+      },
+      "warrantyInformation": "Garantie de 3 ans",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 2,
+          "comment": "Très mécontent de mon achat !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Mateo Perez",
+          "reviewerEmail": "mateo.perez@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Cameron Perez",
+          "reviewerEmail": "cameron.perez@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Aurora Barnes",
+          "reviewerEmail": "aurora.barnes@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 43,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "7095702028776",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Eggs/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Eggs/thumbnail.png"
+    },
+    {
+      "id": 24,
+      "title": "Steak de poisson",
+      "description": "Steak de poisson de qualité, idéal pour griller, cuire au four ou poêler.",
+      "category": "épiceries",
+      "price": 14.99,
+      "discountPercentage": 7,
+      "rating": 4.83,
+      "stock": 99,
+      "tags": [
+        "seafood"
+      ],
+      "sku": "XNIH1MTA",
+      "weight": 8,
+      "dimensions": {
+        "width": 20.14,
+        "height": 8.4,
+        "depth": 10.01
+      },
+      "warrantyInformation": "Garantie 1 an",
+      "shippingInformation": "Expédié dans 1 mois",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Excellent rapport qualité/prix !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Michael Johnson",
+          "reviewerEmail": "michael.johnson@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Julian Newton",
+          "reviewerEmail": "julian.newton@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Lila Hudson",
+          "reviewerEmail": "lila.hudson@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 49,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "4250692197342",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Fish%20Steak/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Fish%20Steak/thumbnail.png"
+    },
+    {
+      "id": 25,
+      "title": "Poivron vert",
+      "description": "Poivron vert frais et vibrant, parfait pour ajouter de la couleur et de la saveur à vos plats.",
+      "category": "épiceries",
+      "price": 1.29,
+      "discountPercentage": 15.5,
+      "rating": 4.28,
+      "stock": 89,
+      "tags": [
+        "vegetables"
+      ],
+      "sku": "HU7S7VQ0",
+      "weight": 7,
+      "dimensions": {
+        "width": 7.32,
+        "height": 14.31,
+        "depth": 21.38
+      },
+      "warrantyInformation": "Garantie de 5 ans",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Maya Reed",
+          "reviewerEmail": "maya.reed@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Madison Collins",
+          "reviewerEmail": "madison.collins@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "J'achèterais à nouveau !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Ethan Thompson",
+          "reviewerEmail": "ethan.thompson@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "7583442707568",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Green%20Bell%20Pepper/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Green%20Bell%20Pepper/thumbnail.png"
+    },
+    {
+      "id": 26,
+      "title": "Piment vert",
+      "description": "Piment vert épicé, idéal pour ajouter du piquant à vos recettes préférées.",
+      "category": "épiceries",
+      "price": 0.99,
+      "discountPercentage": 18.51,
+      "rating": 4.43,
+      "stock": 8,
+      "tags": [
+        "vegetables"
+      ],
+      "sku": "Y4RM3JCB",
+      "weight": 2,
+      "dimensions": {
+        "width": 18.67,
+        "height": 21.17,
+        "depth": 25.26
+      },
+      "warrantyInformation": "Aucune garantie",
+      "shippingInformation": "Expédié sous 1 à 2 jours ouvrables",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 2,
+          "comment": "Produit décevant !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Mateo Bennett",
+          "reviewerEmail": "mateo.bennett@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Natalie Price",
+          "reviewerEmail": "natalie.price@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Avery Barnes",
+          "reviewerEmail": "avery.barnes@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 30 jours",
+      "minimumOrderQuantity": 43,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "8400326844874",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Green%20Chili%20Pepper/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Green%20Chili%20Pepper/thumbnail.png"
+    },
+    {
+      "id": 27,
+      "title": "Pot de miel",
+      "description": "Miel pur et naturel dans un pot pratique, parfait pour sucrer les boissons ou arroser les aliments.",
+      "category": "épiceries",
+      "price": 6.99,
+      "discountPercentage": 1.91,
+      "rating": 3.5,
+      "stock": 25,
+      "tags": [
+        "condiments"
+      ],
+      "sku": "BTBNIIOU",
+      "weight": 9,
+      "dimensions": {
+        "width": 26.53,
+        "height": 27.11,
+        "depth": 6.63
+      },
+      "warrantyInformation": "Garantie de 2 ans",
+      "shippingInformation": "Expédié du jour au lendemain",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Expédition rapide!",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Nicholas Bailey",
+          "reviewerEmail": "nicholas.bailey@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Produit génial !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Gabriel Hayes",
+          "reviewerEmail": "gabriel.hayes@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très impressionné !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "James Garcia",
+          "reviewerEmail": "james.garcia@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 90 jours",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "0668665656044",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Honey%20Jar/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Honey%20Jar/thumbnail.png"
+    },
+    {
+      "id": 28,
+      "title": "Glace",
+      "description": "Crème glacée crémeuse et délicieuse, disponible en différentes saveurs pour un régal délicieux.",
+      "category": "épiceries",
+      "price": 5.49,
+      "discountPercentage": 7.58,
+      "rating": 3.77,
+      "stock": 76,
+      "tags": [
+        "desserts"
+      ],
+      "sku": "VEZMU1EQ",
+      "weight": 5,
+      "dimensions": {
+        "width": 17.66,
+        "height": 24.49,
+        "depth": 25.98
+      },
+      "warrantyInformation": "Garantie de 2 ans",
+      "shippingInformation": "Expédié dans 2 semaines",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Excellent produit !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Elena Baker",
+          "reviewerEmail": "elena.baker@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très impressionné !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Madeline Simpson",
+          "reviewerEmail": "madeline.simpson@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très contente de mon achat !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Caleb Nelson",
+          "reviewerEmail": "caleb.nelson@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Aucune politique de retour",
+      "minimumOrderQuantity": 19,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "9603960319256",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Ice%20Cream/1.png",
+        "https://cdn.dummyjson.com/products/images/groceries/Ice%20Cream/2.png",
+        "https://cdn.dummyjson.com/products/images/groceries/Ice%20Cream/3.png",
+        "https://cdn.dummyjson.com/products/images/groceries/Ice%20Cream/4.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Ice%20Cream/thumbnail.png"
+    },
+    {
+      "id": 29,
+      "title": "Jus",
+      "description": "Jus de fruits rafraîchissant, riche en vitamines et idéal pour rester hydraté.",
+      "category": "épiceries",
+      "price": 3.99,
+      "discountPercentage": 5.45,
+      "rating": 3.41,
+      "stock": 99,
+      "tags": [
+        "beverages"
+      ],
+      "sku": "M2K19S06",
+      "weight": 2,
+      "dimensions": {
+        "width": 8.97,
+        "height": 12.26,
+        "depth": 15.05
+      },
+      "warrantyInformation": "Garantie 1 semaine",
+      "shippingInformation": "Expédié sous 1 à 2 jours ouvrables",
+      "availabilityStatus": "En stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Leo Rivera",
+          "reviewerEmail": "leo.rivera@x.dummyjson.com"
+        },
+        {
+          "rating": 2,
+          "comment": "Ne vaut pas son prix !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Ethan Martinez",
+          "reviewerEmail": "ethan.martinez@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Excellente qualité !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Max Parker",
+          "reviewerEmail": "max.parker@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 90 jours",
+      "minimumOrderQuantity": 26,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "8546824122355",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Juice/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Juice/thumbnail.png"
+    },
+    {
+      "id": 30,
+      "title": "Kiwi",
+      "description": "Kiwi riche en nutriments, parfait pour grignoter ou ajouter une touche tropicale à vos plats.",
+      "category": "épiceries",
+      "price": 2.49,
+      "discountPercentage": 10.32,
+      "rating": 4.37,
+      "stock": 1,
+      "tags": [
+        "fruits"
+      ],
+      "sku": "0X3NORB9",
+      "weight": 8,
+      "dimensions": {
+        "width": 27.3,
+        "height": 7.48,
+        "depth": 15.08
+      },
+      "warrantyInformation": "Garantie de 6 mois",
+      "shippingInformation": "Expédié sous 3 à 5 jours ouvrés",
+      "availabilityStatus": "Faible stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Nora Russell",
+          "reviewerEmail": "nora.russell@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Très satisfait !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Dylan Wells",
+          "reviewerEmail": "dylan.wells@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Excellent produit !",
+          "date": "2024-05-23T08:56:21.620Z",
+          "reviewerName": "Noah Hernandez",
+          "reviewerEmail": "noah.hernandez@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "Politique de retour de 7 jours",
+      "minimumOrderQuantity": 8,
+      "meta": {
+        "createdAt": "2024-05-23T08:56:21.620Z",
+        "updatedAt": "2024-05-23T08:56:21.620Z",
+        "barcode": "3325493172934",
+        "qrCode": "https://assets.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "https://cdn.dummyjson.com/products/images/groceries/Kiwi/1.png"
+      ],
+      "thumbnail": "https://cdn.dummyjson.com/products/images/groceries/Kiwi/thumbnail.png"
+    }
+  ],
+  "total": 194,
+  "skip": 0,
+  "limit": 30
+}

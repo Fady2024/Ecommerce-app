@@ -5,6 +5,7 @@ class CategoryItem extends StatelessWidget {
   final String image;
   final VoidCallback onTap;
   final bool isSelected; // Add isSelected parameter
+  final String selectedLanguage; // Add selectedLanguage parameter
 
   const CategoryItem({
     super.key,
@@ -12,14 +13,18 @@ class CategoryItem extends StatelessWidget {
     required this.image,
     required this.onTap,
     required this.isSelected, // Initialize the new parameter
+    required this.selectedLanguage, // Initialize the selectedLanguage parameter
   });
 
   @override
   Widget build(BuildContext context) {
+    // Set width based on selected language
+    final double width = selectedLanguage == 'Français' ? 210.0 : 180.0;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 180.0,
+        width: width, // Use dynamic width based on language
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         decoration: BoxDecoration(

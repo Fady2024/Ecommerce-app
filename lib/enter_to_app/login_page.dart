@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import '../pages/day_night_switch.dart';
 import '../pages/ecommerce_page.dart';
 import 'signup_page.dart';
 import 'welcome_screen.dart';
@@ -18,7 +19,11 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final selectedLanguage =
+      AppState().selectedLanguage; // Get the current language
   bool _isLoading = false;
+  bool _obscurePassword = true; // New variable for password visibility
+  bool _isDarkMode = false; // Initialize based on your app's logic or provider
 
   void _showSnackBar(String title, String message, Icon icon) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -43,8 +48,10 @@ class _SignInScreenState extends State<SignInScreen> {
         password: _passwordController.text,
       );
       _showSnackBar(
-        'Login',
-        'Successfully logged in. Welcome back!',
+        selectedLanguage == 'Français' ? 'Connexion' : 'Login',
+        selectedLanguage == 'Français'
+            ? 'Connecté avec succès. Bienvenue à nouveau !'
+            : 'Successfully logged in. Welcome back!',
         const Icon(Icons.done, color: Colors.white),
       );
       Navigator.of(context).pushReplacement(
@@ -52,8 +59,10 @@ class _SignInScreenState extends State<SignInScreen> {
       );
     } catch (e) {
       _showSnackBar(
-        'Error',
-        'Check your details and try again.',
+        selectedLanguage == 'Français' ? 'Erreur' : 'Error',
+        selectedLanguage == 'Français'
+            ? 'Vérifiez vos informations et réessayez.'
+            : 'Check your details and try again.',
         const Icon(Icons.error_outline, color: Colors.white),
       );
     } finally {
@@ -66,7 +75,8 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
@@ -78,13 +88,25 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     } catch (e) {
       _showSnackBar(
-        'Error',
-        'Failed to sign in with Google: $e',
+        selectedLanguage == 'Français' ? 'Erreur' : 'Error',
+        selectedLanguage == 'Français'
+            ? 'Échec de la connexion avec Google : $e'
+            : 'Failed to sign in with Google: $e',
         const Icon(Icons.error, color: Colors.pink),
       );
     } finally {
       setState(() => _isLoading = false);
     }
+  }
+
+  // Toggle theme mode
+  void _toggleTheme(bool value) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _isDarkMode = value;
+      themeNotifier
+          .toggleTheme(); // Assuming this method switches the theme in your provider
+    });
   }
 
   @override
@@ -100,7 +122,22 @@ class _SignInScreenState extends State<SignInScreen> {
             );
           },
         ),
-        title: const Text('Sign In'),
+        title: Text(selectedLanguage == 'Français' ? 'Connexion' : 'Sign In'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: DayNightSwitch(
+              value: _isDarkMode,
+              onChanged: _toggleTheme,
+              moonImage: AssetImage('assets/moon.png'),
+              sunImage: AssetImage('assets/sun.png'),
+              sunColor: Colors.yellow,
+              moonColor: Colors.white,
+              dayColor: Colors.blue,
+              nightColor: Color(0xFF393939),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -111,19 +148,36 @@ class _SignInScreenState extends State<SignInScreen> {
                 children: [
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email Address',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: selectedLanguage == 'Français'
+                          ? 'Adresse e-mail'
+                          : 'Email Address',
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 10.0),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: selectedLanguage == 'Français'
+                          ? 'Mot de passe'
+                          : 'Password',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword =
+                                !_obscurePassword; // Toggle password visibility
+                          });
+                        },
+                      ),
                     ),
-                    obscureText: true,
+                    obscureText: _obscurePassword, // Use the boolean variable
                   ),
                   Align(
                     alignment: Alignment.centerRight,
@@ -131,37 +185,55 @@ class _SignInScreenState extends State<SignInScreen> {
                       onPressed: () async {
                         if (_emailController.text.isNotEmpty) {
                           try {
-                            await _auth.sendPasswordResetEmail(email: _emailController.text);
+                            await _auth.sendPasswordResetEmail(
+                                email: _emailController.text);
                             _showSnackBar(
-                              'Success',
-                              'Password reset email sent! Check your inbox.',
-                              const Icon(Icons.email_outlined, color: Colors.white),
+                              selectedLanguage == 'Français'
+                                  ? 'Succès'
+                                  : 'Success',
+                              selectedLanguage == 'Français'
+                                  ? 'E-mail de réinitialisation de mot de passe envoyé ! Vérifiez votre boîte de réception.'
+                                  : 'Password reset email sent! Check your inbox.',
+                              const Icon(Icons.email_outlined,
+                                  color: Colors.white),
                             );
                           } catch (e) {
                             _showSnackBar(
-                              'Error',
-                              'Failed to send password reset email. Please try again.',
-                              const Icon(Icons.error_outline, color: Colors.white),
+                              selectedLanguage == 'Français'
+                                  ? 'Erreur'
+                                  : 'Error',
+                              selectedLanguage == 'Français'
+                                  ? 'Échec de l\'envoi de l\'e-mail de réinitialisation du mot de passe. Veuillez réessayer.'
+                                  : 'Failed to send password reset email. Please try again.',
+                              const Icon(Icons.error_outline,
+                                  color: Colors.white),
                             );
                           }
                         } else {
                           _showSnackBar(
-                            'Error',
-                            'Please enter your email address.',
-                            const Icon(Icons.error_outline, color: Colors.white),
+                            selectedLanguage == 'Français' ? 'Erreur' : 'Error',
+                            selectedLanguage == 'Français'
+                                ? 'Veuillez entrer votre adresse e-mail.'
+                                : 'Please enter your email address.',
+                            const Icon(Icons.error_outline,
+                                color: Colors.white),
                           );
                         }
                       },
-                      child: const Text(
-                        'Forgot password?',
-                        style: TextStyle(color: Colors.blue),
+                      child: Text(
+                        selectedLanguage == 'Français'
+                            ? 'Mot de passe oublié ?'
+                            : 'Forgot password?',
+                        style: const TextStyle(color: Colors.blue),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20.0),
                   ElevatedButton(
                     onPressed: _signIn,
-                    child: const Text('Log In'),
+                    child: Text(selectedLanguage == 'Français'
+                        ? 'Connexion'
+                        : 'Log In'),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
@@ -173,7 +245,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   ElevatedButton.icon(
                     onPressed: _signInWithGoogle,
                     icon: const Icon(Icons.g_mobiledata, color: Colors.white),
-                    label: const Text('Sign in with Google', style: TextStyle(color: Colors.white)),
+                    label: Text(
+                        selectedLanguage == 'Français'
+                            ? 'Se connecter avec Google'
+                            : 'Sign in with Google',
+                        style: const TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       minimumSize: const Size(double.infinity, 50),
@@ -189,18 +265,24 @@ class _SignInScreenState extends State<SignInScreen> {
                       onTap: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) => SignUpPage()),
-                        );                   },
+                        );
+                      },
                       child: RichText(
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: 'Don\'t have an account? ',
-                              style: TextStyle(color: themeNotifier.themeMode == ThemeMode.light
-                                  ? Colors.black
-                                  : Colors.white,),
+                              text: selectedLanguage == 'Français'
+                                  ? 'Vous n\'avez pas de compte ? '
+                                  : 'Don\'t have an account? ',
+                              style: TextStyle(
+                                color:
+                                    themeNotifier.themeMode == ThemeMode.light
+                                        ? Colors.black
+                                        : Colors.white,
+                              ),
                             ),
                             const TextSpan(
-                              text: 'Sign up',
+                              text: 'S\'inscrire',
                               style: TextStyle(color: Colors.red),
                             ),
                           ],
@@ -211,8 +293,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   if (_isLoading)
                     Container(
                       child: Center(
-                        child: Lottie.asset('lib/data/Animation - 1725477463954.json',
-                          width:double.infinity,
+                        child: Lottie.asset(
+                          'lib/data/Animation - 1725477463954.json',
+                          width: double.infinity,
                           height: 100,
                         ),
                       ),
