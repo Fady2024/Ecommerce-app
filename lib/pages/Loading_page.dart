@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 import 'ecommerce_page.dart'; // Import Ecommerce page
 import '../data/data_service.dart'; // Import DataService
-import '../data/product.dart'; // Import Product model
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -12,16 +11,16 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  late Future<List<Product>> _loadProductsFuture;
+  late Future<void> _loadProductsFuture;
 
   @override
   void initState() {
     super.initState();
-    // Load products using DataService
-    _loadProductsFuture = DataService().loadProducts();
+    // Load products using DataService based on the selected language
+    _loadProductsFuture = _loadProducts();
 
     // Navigate to the main app after products are loaded
-    _loadProductsFuture.then((products) {
+    _loadProductsFuture.then((_) {
       AppState().setLoading(false); // Change loading state
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -31,7 +30,20 @@ class _LoadingScreenState extends State<LoadingScreen> {
     }).catchError((error) {
       // Handle error if necessary
       print('Error loading products: $error');
+      // Optionally, show an error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load products. Please try again later.')),
+      );
     });
+  }
+
+  Future<void> _loadProducts() async {
+    final language = AppState().selectedLanguage; // Get the selected language
+    try {
+      await DataService().loadProducts(language); // Load products based on the language
+    } catch (e) {
+      throw Exception('Failed to load products: $e'); // Throw exception to be caught in initState
+    }
   }
 
   @override

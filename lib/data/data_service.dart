@@ -3,14 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:loginpage/data/product.dart';
 
-
 class DataService {
-
-
-  Future<List<Product>> loadProducts() async {  // Return non-nullable List<Product>
-
-          print('Loading products from API (English)');
-          return await loadProductsFromApi();
+  Future<List<Product>> loadProducts(String language) async {
+    if (language == 'Français') {
+      print('Loading products from local JSON (French)');
+      return await loadProductsFromLocal();
+    } else {
+      print('Loading products from API (English)');
+      return await loadProductsFromApi();
+    }
   }
 
   Future<List<Product>> loadProductsFromApi() async {
@@ -38,7 +39,4 @@ class DataService {
       throw Exception('Failed to load local products: ${e.toString()}');
     }
   }
-
 }
-
-

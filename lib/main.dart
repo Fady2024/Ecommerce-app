@@ -206,7 +206,7 @@ class MyApp extends StatelessWidget {
             future: Future.wait([
               _loadLanguagePreference(), // Load language preference from Firebase
               themeNotifier.loadThemeModeFromFirebase(), // Load theme mode
-              DataService().loadProducts(), // Load products
+              DataService().loadProducts(AppState().selectedLanguage), // Pass selected language here
             ]),
             builder: (context, snapshot) {
               if (AppState().isLoading) {

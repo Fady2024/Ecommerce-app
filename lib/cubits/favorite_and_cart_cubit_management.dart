@@ -5,8 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import '../data/product.dart';
 import '../data/data_service.dart';
+import '../main.dart';
 import 'favorites_and_cart_state_manager.dart';
-
 class FadyCardCubit extends Cubit<FavoritesAndCartState> {
   final DataService _dataService = DataService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -25,6 +25,10 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
         _loadGuestFavorites(); // Load favorites for guest
       }
     });
+    // Listen for language changes
+    AppState().addListener(() {
+      loadProducts(); // Reload products when language changes
+    });
   }
 
   List<Product> _shopItems = [];
@@ -39,7 +43,8 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
 
   Future<void> loadProducts() async {
     try {
-      final products = await _dataService.loadProducts();
+      final language = AppState().selectedLanguage; // Get the current language
+      final products = await _dataService.loadProducts(language);
       _shopItems = products;
       emit(FavoritesAndCartUpdated(
         shopItems: _shopItems,
