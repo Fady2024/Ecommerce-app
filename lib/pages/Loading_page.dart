@@ -30,9 +30,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
     }).catchError((error) {
       // Handle error if necessary
       print('Error loading products: $error');
-      // Optionally, show an error message to the user
+      // Show an error message to the user based on the selected language
+      final selectedLanguage = AppState().selectedLanguage;
+      final errorMessage = selectedLanguage == 'Français'
+          ? 'Échec du chargement des produits. Veuillez réessayer plus tard.'
+          : 'Failed to load products. Please try again later.';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load products. Please try again later.')),
+        SnackBar(content: Text(errorMessage)),
       );
     });
   }

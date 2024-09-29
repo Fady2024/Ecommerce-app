@@ -22,6 +22,7 @@ class ReviewWidget extends StatefulWidget {
 }
 
 class _ReviewWidgetState extends State<ReviewWidget> {
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
   final DatabaseReference _repliesRef =
       FirebaseDatabase.instance.ref('replies');
   final _replyController = TextEditingController();
@@ -42,14 +43,17 @@ class _ReviewWidgetState extends State<ReviewWidget> {
 
     if (reply.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Reply cannot be empty'),
+        SnackBar(
+          content: Text(
+            selectedLanguage == 'Français'
+                ? 'La réponse ne peut pas être vide.'
+                : 'Reply cannot be empty',
+          ),
           backgroundColor: Colors.red,
         ),
       );
       return;
     }
-
     try {
       final newReplyRef = _repliesRef.push();
       await newReplyRef.set({
@@ -61,8 +65,11 @@ class _ReviewWidgetState extends State<ReviewWidget> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Reply submitted successfully'),
+         SnackBar(
+          content: Text(selectedLanguage == 'Français'
+              ? 'Réponse soumise avec succès.'
+              : 'Reply submitted successfully',
+          ),
           backgroundColor: Colors.green,
         ),
       );
@@ -72,17 +79,20 @@ class _ReviewWidgetState extends State<ReviewWidget> {
       setState(() {
         _isReplying = false;
       });
-    } catch (e) {
+    }catch (e) {
       print('Error submitting reply: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to submit reply.'),
+          content: Text(
+            selectedLanguage == 'Français'
+                ? 'Échec de la soumission de la réponse.'
+                : 'Failed to submit reply.',
+          ),
           backgroundColor: Colors.red,
         ),
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
@@ -176,25 +186,31 @@ class _ReviewWidgetState extends State<ReviewWidget> {
             if (_isReplying) ...[
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Your Name (optional)',
-                  border: OutlineInputBorder(),
+                decoration:  InputDecoration(
+                  labelText: selectedLanguage == 'Français'
+                      ? 'Votre nom (facultatif)'
+                      : 'Your Name (optional)',
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 1,
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _replyController,
-                decoration: const InputDecoration(
-                  labelText: 'Write your reply',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: selectedLanguage == 'Français'
+                      ? 'Écrivez votre réponse'
+                      : 'Write your reply',
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 3,
               ),
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: _submitReply,
-                child: const Text('Submit Reply'),
+                child: Text(
+                  selectedLanguage == 'Français' ? 'Soumettre la réponse' : 'Submit Reply',
+                ),
               ),
             ],
             Row(
@@ -243,9 +259,13 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                 },
                                 child: Text(
                                   _showReplies
-                                      ? 'Hide Replies'
-                                      : 'Show Replies (${repliesList.length})',
-                                  style: TextStyle(color: Colors.blue),
+                                      ? (selectedLanguage == 'Français'
+                                      ? 'Masquer les réponses'
+                                      : 'Hide Replies')
+                                      : (selectedLanguage == 'Français'
+                                      ? 'Afficher les réponses (${repliesList.length})'
+                                      : 'Show Replies (${repliesList.length})'),
+                                  style: const TextStyle(color: Colors.blue),
                                 ),
                               ),
                               if (_showReplies) ...[
@@ -277,7 +297,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            reply['name'] ?? 'Anonymous',
+                                            reply['name'] ?? (selectedLanguage == 'Français' ? 'Anonyme' : 'Anonymous'),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
@@ -330,8 +350,9 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                         _isReplying = !_isReplying;
                       });
                     },
-                    child: Text(_isReplying ? 'Cancel' : 'Reply'),
-                  ),
+                    child: Text(_isReplying
+                        ? (selectedLanguage == 'Français' ? 'Annuler' : 'Cancel')
+                        : (selectedLanguage == 'Français' ? 'Répondre' : 'Reply')),                  ),
                 ),
               ],
             ),

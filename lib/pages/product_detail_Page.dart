@@ -31,6 +31,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final _commentController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
   double _rating = 5.0; // Default rating
   bool _isDarkMode = false; // Initialize based on your app's logic or provider
   late final DatabaseReference _commentsRef;
@@ -102,15 +103,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       if (remainingStock > 0) {
         cubit.addItemToCart(product.id - 1); // Pass the product ID - 1
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Product added to cart!'),
+           SnackBar(
+            content: Text(selectedLanguage == 'Français'
+                ? 'Produit ajouté au panier!'
+                : 'Product added to cart!'),
             backgroundColor: Colors.green,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No more stock available for this product!'),
+           SnackBar(
+            content: Text(selectedLanguage == 'Français'
+                ? 'Plus de stock disponible pour ce produit!'
+                : 'No more stock available for this product!'),
             backgroundColor: Colors.red,
           ),
         );
@@ -118,8 +123,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text(
-            '🌟 You need to be logged in to add items to your cart! 🛒✨ Please sign up or log in to start shopping and enjoy exclusive benefits! 🎉',
+          content:  Text(
+            selectedLanguage == 'Français'
+                ? 'Vous devez être connecté pour ajouter des articles à votre panier! Veuillez vous inscrire ou vous connecter pour commencer vos achats.'
+                : 'You need to be logged in to add items to your cart! Please sign up or log in to start shopping.',
             style: TextStyle(fontSize: 16), // Adjust font size if needed
           ),
           backgroundColor: const Color(0xFF175E19), // Use a solid color for background
@@ -141,8 +148,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       SnackBar(
         content: Text(
           cubit.favoriteItems.contains(product)
-              ? 'Added to favorites!'
-              : 'Removed from favorites!',
+              ? selectedLanguage == 'Français'
+              ?'Ajouté aux favoris !':'Added to favorites!'
+              : selectedLanguage == 'Français'
+              ?'Supprimé des favoris !':'Removed from favorites!',
         ),
         backgroundColor: Colors.pink,
       ),
@@ -156,8 +165,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     if (comment.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Comment cannot be empty'),
+         SnackBar(
+          content: Text(selectedLanguage == 'Français'
+              ? 'Le commentaire ne peut pas être vide'
+              : 'Comment cannot be empty'),
           backgroundColor: Colors.red,
         ),
       );
@@ -167,8 +178,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     // If an email is provided, validate it
     if (email.isNotEmpty && !EmailValidator.validate(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid email address'),
+         SnackBar(
+          content: Text(selectedLanguage == 'Français'
+              ? 'Adresse e-mail invalide'
+              : 'Invalid email address'),
           backgroundColor: Colors.red,
         ),
       );
@@ -179,16 +192,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       final newCommentRef = _commentsRef.push();
       await newCommentRef.set({
         'productId': widget.product.id,
-        'name': name.isEmpty ? 'Anonymous' : name, // Default to 'Anonymous' if no name is provided
-        'email': email.isEmpty ? 'No email' : email, // Default to 'No email' if no email is provided
+        'name': name.isEmpty ? selectedLanguage == 'Français' ? 'Anonyme' : 'Anonymous' : name, // Default to 'Anonymous' if no name is provided
+        'email': email.isEmpty ? selectedLanguage == 'Français' ? 'Pas d\'email' : 'No email' : email, // Default to 'No email' if no email is provided
         'comment': comment,
         'rating': _rating,
         'timestamp': DateTime.now().toIso8601String(),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Comment submitted successfully'),
+         SnackBar(
+          content: Text(selectedLanguage == 'Français'
+              ? 'Commentaire soumis avec succès'
+              : 'Comment submitted successfully'),
           backgroundColor: Colors.green,
         ),
       );
@@ -201,10 +216,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         // No need to call _loadComments() as we're already listening to updates
       });
     } catch (e) {
-      print('Error submitting comment: $e');
+      print(selectedLanguage == 'Français'
+          ?'Erreur lors de l\'envoi du commentaire: $e':'Error submitting comment: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to submit comment.'),
+          content: Text(selectedLanguage == 'Français'
+              ? 'Échec de la soumission du commentaire.'
+              : 'Failed to submit comment.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -223,13 +241,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           IconButton(
             icon: Icon(Icons.share),
             onPressed: () {
-              // Share product details using the share_plus package
-              final String productDetails =
-                  '🌟 Check out this amazing product: *${widget.product.title}*!\n\n'
+              final String productDetails = selectedLanguage == 'Français'
+                  ? '🌟 Découvrez ce produit incroyable : *${widget.product.title}*!\n\n'
+                  '💰 Prix d\'origine : \$${widget.product.price.toStringAsFixed(2)}\n'
+                  '🎉 Prix réduit : \$${(widget.product.price * (1 - widget.product.discountPercentage / 100)).toStringAsFixed(2)}\n\n'
+                  '🛒 Profitez-en maintenant et faites des économies! 🔥\n'
+                  : '🌟 Check out this amazing product: *${widget.product.title}*!\n\n'
                   '💰 Original Price: \$${widget.product.price.toStringAsFixed(2)}\n'
                   '🎉 Discounted Price: \$${(widget.product.price * (1 - widget.product.discountPercentage / 100)).toStringAsFixed(2)}\n\n'
                   '🛒 Grab it now and enjoy great savings! 🔥\n';
-                  //'👉 [Insert product link]';
 
               Share.share(productDetails);
             },
@@ -301,21 +321,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   }).toList(),
                 ],
                 const SizedBox(height: 16),
-                const Text('Add a Comment',
+                 Text(selectedLanguage == 'Français' ? 'Ajouter un commentaire':'Add a Comment',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name (Optional)',
+                  decoration:  InputDecoration(
+                    labelText: selectedLanguage == 'Français' ? 'Nom (facultatif)':'Name (Optional)',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email (Optional)',
+                  decoration:  InputDecoration(
+                    labelText: selectedLanguage == 'Français' ? 'Courriel (facultatif)':'Email (Optional)',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -323,15 +343,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 TextField(
                   controller: _commentController,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Comment',
+                  decoration:  InputDecoration(
+                    labelText: selectedLanguage == 'Français' ? 'Commentaire' : 'Comment',
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Text('Rating:'),
+                     Text(selectedLanguage == 'Français' ?'Notation: ':'Rating:'),
                     const SizedBox(width: 8),
                     RatingBar.builder(
                       initialRating: _rating,
@@ -353,7 +373,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _submitComment,
-                  child: const Text('Submit Comment'),
+                  child: Text(selectedLanguage == 'Français' ? 'Soumettre un commentaire' : 'Submit Comment'),
                 ),
               ],
             ),

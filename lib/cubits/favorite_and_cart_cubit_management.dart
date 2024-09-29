@@ -10,7 +10,7 @@ import 'favorites_and_cart_state_manager.dart';
 class FadyCardCubit extends Cubit<FavoritesAndCartState> {
   final DataService _dataService = DataService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
   // References to user data in Firebase
   final DatabaseReference _userRef = FirebaseDatabase.instance.ref().child('users');
 
@@ -53,7 +53,9 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
         totalPrice: _calculateTotal(),
       ));
     } catch (e) {
-      emit(FavoritesAndCartError('Failed to load products: ${e.toString()}'));
+      emit(FavoritesAndCartError(selectedLanguage == 'Français'
+          ? 'Échec du chargement des produits: ${e.toString()}'
+          : 'Failed to load products: ${e.toString()}'));
     }
   }
 
@@ -79,7 +81,10 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
         totalPrice: _calculateTotal(),
       ));
     } catch (error) {
-      emit(FavoritesAndCartError('Failed to load user favorite products: ${error.toString()}'));
+      emit(FavoritesAndCartError(selectedLanguage == 'Français'
+          ? 'Échec du chargement des produits favoris: ${error.toString()}'
+          : 'Failed to load user favorite products: ${error.toString()}'
+      ));
     }
   }
 
@@ -105,7 +110,10 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
         totalPrice: _calculateTotal(),
       ));
     } catch (error) {
-      emit(FavoritesAndCartError('Failed to load guest favorite products: ${error.toString()}'));
+      emit(FavoritesAndCartError(selectedLanguage == 'Français'
+          ? 'Échec du chargement des produits favoris des invités: ${error.toString()}'
+          : 'Failed to load guest favorite products: ${error.toString()}'
+      ));
     }
   }
 
@@ -159,7 +167,9 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
           totalPrice: _calculateTotal(),
         ));
       } catch (error) {
-        emit(FavoritesAndCartError('Failed to load cart products: ${error.toString()}'));
+        emit(FavoritesAndCartError(selectedLanguage == 'Français'
+            ? 'Échec du chargement des articles du panier: ${error.toString()}'
+            : 'Failed to load cart products: ${error.toString()}'));
       }
     }
   }
@@ -209,11 +219,16 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
 
         _saveCartProducts(); // Save updated cart to Firebase
       } else {
-        emit(FavoritesAndCartError('This product is already in the cart.'));
+        emit(FavoritesAndCartError(selectedLanguage == 'Français'
+            ? 'Ce produit est déjà dans le panier.'
+            : 'This product is already in the cart.'));
       }
     } else {
       // User is not logged in
-      emit(FavoritesAndCartError('🌟 You need to be logged in to add items to your cart! 🛒✨ Please sign up or log in to start shopping and enjoy exclusive benefits! 🎉'));
+      emit(FavoritesAndCartError(selectedLanguage == 'Français'
+          ? '🌟 Vous devez vous connecter pour ajouter des articles à votre panier ! 🛒✨ Veuillez vous inscrire ou vous connecter pour commencer à magasiner et profiter des avantages exclusifs ! 🎉'
+          : '🌟 You need to be logged in to add items to your cart! 🛒✨ Please sign up or log in to start shopping and enjoy exclusive benefits! 🎉'
+      ));
     }
   }
 
@@ -236,8 +251,9 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
 
         _saveCartProducts(); // Save updated cart to Firebase
       } else {
-        emit(FavoritesAndCartError(
-            'Cannot add more than $availableStock items to the cart.'));
+        emit(FavoritesAndCartError(selectedLanguage == 'Français'
+            ? 'Impossible d\'ajouter plus de $availableStock articles au panier.'
+            : 'Cannot add more than $availableStock items to the cart.'));
       }
     }
   }

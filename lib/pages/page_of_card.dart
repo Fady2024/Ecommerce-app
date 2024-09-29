@@ -18,6 +18,8 @@ class CardPage extends StatefulWidget {
 
 class _CardPageState extends State<CardPage> {
   bool _isDarkMode = false; // Initialize based on your app's logic or provider
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
+
 // Toggle theme mode
   void _toggleTheme(bool value) {
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
@@ -40,7 +42,7 @@ class _CardPageState extends State<CardPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Cart'),
+        title: Text(selectedLanguage == 'Français' ? 'Votre Panier':'Your Cart'),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -196,7 +198,7 @@ class _CardPageState extends State<CardPage> {
                                               .showSnackBar(
                                             SnackBar(
                                               content: Text(
-                                                  'Cannot add more than $availableStock items to the cart.'),
+                                                  selectedLanguage == 'Français' ?'Impossible d\'ajouter plus de $availableStock articles dans le panier.':'Cannot add more than $availableStock items to the cart.'),
                                               backgroundColor: Colors.red,
                                             ),
                                           );
@@ -229,8 +231,8 @@ class _CardPageState extends State<CardPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Pay Now button pressed")),
+                           SnackBar(
+                              content: Text( selectedLanguage == 'Français' ?"Bouton Payer maintenant appuyé":"Pay Now button pressed")),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -247,7 +249,7 @@ class _CardPageState extends State<CardPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Total amount\n \$${state.totalPrice.toStringAsFixed(2)}",
+                            selectedLanguage == 'Français' ?"Montant total\n \$${state.totalPrice.toStringAsFixed(2)}":"Total amount\n \$${state.totalPrice.toStringAsFixed(2)}",
                             style: const TextStyle(
                               fontSize: 16,
                             ),
@@ -260,8 +262,8 @@ class _CardPageState extends State<CardPage> {
                               color: Colors.blueGrey[800],
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
-                              "Pay Now",
+                            child: Text(
+                              selectedLanguage == 'Français' ? 'Payer maintenant':"Pay Now",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -275,31 +277,35 @@ class _CardPageState extends State<CardPage> {
                 ],
               );
             } else {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.shopping_cart_outlined,
+                    const Icon(Icons.shopping_cart_outlined,
                         size: 100, color: Colors.grey),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Text(
-                      "Your cart is empty!",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      selectedLanguage == 'Français' ? 'Votre panier est vide!' : "Your cart is empty!",
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
-                      "Looks like you haven't added anything yet.",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      selectedLanguage == 'Français' ? "On dirait que vous n'avez rien ajouté." : "Looks like you haven't added anything yet.",
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    SizedBox(height: 5),
-                    Text(
-                      "Start shopping and fill your cart with fresh items!",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        selectedLanguage == 'Français' ? "Commencez à faire du shopping et remplissez votre panier avec des articles frais !" : "Start shopping and fill your cart with fresh items!",
+                        style: const TextStyle(fontSize: 16, color: Colors.grey),
+                        textAlign: TextAlign.center, // Ensure text is centered
+                      ),
                     ),
                   ],
                 ),
               );
+
             }
           } else {
             return const Center(

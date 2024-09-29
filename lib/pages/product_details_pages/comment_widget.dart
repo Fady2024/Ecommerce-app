@@ -30,6 +30,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   final DatabaseReference _repliesRef = FirebaseDatabase.instance.ref('replies');
   final _replyController = TextEditingController();
   final _nameController = TextEditingController();
+  final selectedLanguage = AppState().selectedLanguage; // Get the current language
   bool _isReplying = false;
   bool _showReplies = false;
   List<Map<String, dynamic>> _replies = [];
@@ -70,12 +71,14 @@ class _CommentWidgetState extends State<CommentWidget> {
     final reply = _replyController.text.trim();
     final name = _nameController.text.trim().isNotEmpty
         ? _nameController.text.trim()
-        : 'Anonymous';
+        : (selectedLanguage == 'Français' ? 'Anonyme' : 'Anonymous');
 
     if (reply.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Reply cannot be empty'),
+         SnackBar(
+          content: Text(selectedLanguage == 'Français'
+              ? 'La réponse ne peut pas être vide'
+              : 'Reply cannot be empty'),
           backgroundColor: Colors.red,
         ),
       );
@@ -92,8 +95,10 @@ class _CommentWidgetState extends State<CommentWidget> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Reply submitted successfully'),
+         SnackBar(
+          content: Text(selectedLanguage == 'Français'
+              ? 'Réponse soumise avec succès'
+              : 'Reply submitted successfully'),
           backgroundColor: Colors.green,
         ),
       );
@@ -107,7 +112,9 @@ class _CommentWidgetState extends State<CommentWidget> {
       print('Error submitting reply: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to submit reply.'),
+          content: Text(selectedLanguage == 'Français'
+              ? 'Échec de la soumission de la réponse.'
+              : 'Failed to submit reply.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -235,27 +242,36 @@ class _CommentWidgetState extends State<CommentWidget> {
             if (_isReplying) ...[
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Your Name (optional)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: selectedLanguage == 'Français'
+                      ? 'Votre nom (facultatif)'
+                      : 'Your Name (optional)',
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 1,
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _replyController,
-                decoration: const InputDecoration(
-                  labelText: 'Write your reply',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: selectedLanguage == 'Français'
+                      ? 'Écrivez votre réponse'
+                      : 'Write your reply',
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 3,
               ),
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: _submitReply,
-                child: const Text('Submit Reply'),
+                child: Text(
+                  selectedLanguage == 'Français'
+                      ? 'Soumettre la réponse'
+                      : 'Submit Reply',
+                ),
               ),
             ],
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -270,8 +286,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                         },
                         child: Text(
                           _showReplies
-                              ? 'Hide Replies'
-                              : 'Show Replies (${_replies.length})',
+                              ? (selectedLanguage == 'Français' ? 'Masquer les réponses' : 'Hide Replies')
+                              : (selectedLanguage == 'Français'
+                              ? 'Afficher les réponses (${_replies.length})'
+                              : 'Show Replies (${_replies.length})'),
                           style: TextStyle(color: Colors.blue),
                         ),
                       ),
@@ -300,7 +318,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    reply['name'] ?? 'Anonymous',
+                                    reply['name'] ?? (selectedLanguage == 'Français' ? 'Anonyme' : 'Anonymous'),
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
@@ -343,7 +361,9 @@ class _CommentWidgetState extends State<CommentWidget> {
                         _isReplying = !_isReplying;
                       });
                     },
-                    child: Text(_isReplying ? 'Cancel' : 'Reply'),
+                    child: Text(_isReplying ?  (selectedLanguage == 'Français' ? 'Annuler' : 'Cancel')
+                        : (selectedLanguage == 'Français' ? 'Répondre' : 'Reply'),
+                    ),
                   ),
                 ),
               ],

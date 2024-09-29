@@ -9,7 +9,6 @@ import 'package:loginpage/pages/splash_home%20page.dart';
 import 'package:provider/provider.dart';
 import 'cubits/auth_cubit.dart';
 import 'cubits/favorite_and_cart_cubit_management.dart';
-import 'cubits/splash_cubit.dart';
 import 'cubits/user_profile_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -27,7 +26,6 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
         BlocProvider(create: (context) => FadyCardCubit()..loadProducts()),
         BlocProvider(create: (context) => AuthCubit()),
-        BlocProvider(create: (context) => SplashCubit()),
       ],
       child: RestartWidget(child: MyApp()),
     ),

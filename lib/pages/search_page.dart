@@ -11,7 +11,7 @@ import 'product_detail_page.dart';
 class SearchPage extends StatefulWidget {
   final List<Product> allProducts;
 
-  const SearchPage({
+   const SearchPage({
     Key? key,
     required this.allProducts,
   }) : super(key: key);
@@ -43,6 +43,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedLanguage = AppState().selectedLanguage; // Get the current language
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -50,7 +52,9 @@ class _SearchPageState extends State<SearchPage> {
             Expanded(
               child: FloatingSearchBar(
                 controller: _searchBarController,
-                hint: 'Search for products...',
+                hint: selectedLanguage == 'Français'
+                    ? 'Rechercher des produits...'
+                    : 'Search for products...',
                 scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
                 transitionDuration: const Duration(milliseconds: 800),
                 transitionCurve: Curves.easeInOut,
@@ -73,6 +77,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildAutocompleteDropdown() {
+
     final filteredProducts = widget.allProducts.where((product) {
       final searchQueryLower = _searchQuery.toLowerCase();
       return product.title.toLowerCase().contains(searchQueryLower) ||
@@ -81,22 +86,26 @@ class _SearchPageState extends State<SearchPage> {
     }).toList();
 
     if (filteredProducts.isEmpty) {
+      final selectedLanguage = AppState().selectedLanguage; // Get the current language
       final themeNotifier = Provider.of<ThemeNotifier>(context);
       return Container(
         padding: const EdgeInsets.all(8.0),
         color: themeNotifier.themeMode == ThemeMode.light
             ? Colors.white
             : Colors.black,
-        child: const Center(
+        child: Center(
           child: Text(
-            'No results found 😢',
-            style: TextStyle(fontSize: 23),
+            selectedLanguage == 'Français'
+                ? 'Aucun résultat trouvé 😢'
+                : 'No results found 😢',
+            style: const TextStyle(fontSize: 23),
           ),
         ),
       );
     }
 
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final selectedLanguage = AppState().selectedLanguage; // Get the current language
 
     return Container(
       decoration: BoxDecoration(
@@ -155,8 +164,16 @@ class _SearchPageState extends State<SearchPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('\$${product.price.toStringAsFixed(2)}'),
-                    Text('Rating: ${product.rating} ⭐'),
-                    Text('Stock: ${product.stock}'),
+                    Text(
+                      selectedLanguage == 'Français'
+                          ? 'Note : ${product.rating} ⭐'
+                          : 'Rating: ${product.rating} ⭐',
+                    ),
+                    Text(
+                      selectedLanguage == 'Français'
+                          ? 'Stock : ${product.stock}'
+                          : 'Stock: ${product.stock}',
+                    ),
                   ],
                 ),
                 onTap: () {

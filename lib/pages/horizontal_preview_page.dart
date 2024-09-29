@@ -58,17 +58,30 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
   }
 
 
-  final List<Map<String, String>> _categoryImages = [
-    {'label': 'All Items', 'image': 'assets/b-all.png'},
-    {'label': 'Beauty', 'image': 'assets/make-up.png'},
-    {'label': 'Fragrances', 'image': 'assets/perfume.png'},
-    {'label': 'Furniture', 'image': 'assets/armchair.png'},
-    {'label': 'Groceries', 'image': 'assets/basket.png'},
-  ];
+  List<Map<String, String>> _getCategoryImages() {
+    if (selectedLanguage == 'Français') {
+      return [
+        {'label': 'Tous les articles', 'image': 'assets/b-all.png'},
+        {'label': 'Beauté', 'image': 'assets/make-up.png'},
+        {'label': 'Parfums', 'image': 'assets/perfume.png'},
+        {'label': 'Meubles', 'image': 'assets/armchair.png'},
+        {'label': 'Épiceries', 'image': 'assets/basket.png'},
+      ];
+    } else {
+      return [
+        {'label': 'All Items', 'image': 'assets/b-all.png'},
+        {'label': 'Beauty', 'image': 'assets/make-up.png'},
+        {'label': 'Fragrances', 'image': 'assets/perfume.png'},
+        {'label': 'Furniture', 'image': 'assets/armchair.png'},
+        {'label': 'Groceries', 'image': 'assets/basket.png'},
+      ];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final List<Map<String, String>> _categoryImages = _getCategoryImages();
 
 
     return Scaffold(
@@ -184,7 +197,7 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
                           viewportFraction: 0.8,
                         ),
                         items: _categoryImages.map((category) {
-                          final isAllItems = category['label'] == 'All Items';
+                          final isAllItems = category['label'] == (selectedLanguage == 'Français'?'Tous les articles':'All Items');
                           final categoryProducts = isAllItems
                               ? state.shopItems
                               : state.shopItems
@@ -293,11 +306,11 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
                       selectedLanguage == 'Français' ? 'Beauté' : 'Beauty',
                       image: "assets/make-up.png",
                       onTap: () => _onCategorySelected(
-                          selectedLanguage == 'Français' ? 'beauty' : 'beauty',
+                          selectedLanguage == 'Français' ? 'beauté' : 'beauty',
                           1),
                       isSelected: _selectedCategory ==
                           (selectedLanguage == 'Français'
-                              ? 'beauty'
+                              ? 'beauté'
                               : 'beauty'),
                       selectedLanguage:
                       selectedLanguage, // Pass the selected language here
@@ -309,12 +322,12 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
                       image: "assets/perfume.png",
                       onTap: () => _onCategorySelected(
                           selectedLanguage == 'Français'
-                              ? 'fragrances'
+                              ? 'parfums'
                               : 'fragrances',
                           2),
                       isSelected: _selectedCategory ==
                           (selectedLanguage == 'Français'
-                              ? 'fragrances'
+                              ? 'parfums'
                               : 'fragrances'),
                       selectedLanguage:
                       selectedLanguage, // Pass the selected language here
@@ -326,12 +339,12 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
                       image: "assets/armchair.png",
                       onTap: () => _onCategorySelected(
                           selectedLanguage == 'Français'
-                              ? 'furniture'
+                              ? 'meubles'
                               : 'furniture',
                           3),
                       isSelected: _selectedCategory ==
                           (selectedLanguage == 'Français'
-                              ? 'furniture'
+                              ? 'meubles'
                               : 'furniture'),
                       selectedLanguage:
                       selectedLanguage, // Pass the selected language here
@@ -343,12 +356,12 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
                       image: "assets/basket.png",
                       onTap: () => _onCategorySelected(
                           selectedLanguage == 'Français'
-                              ? 'groceries'
+                              ? 'épiceries'
                               : 'groceries',
                           4),
                       isSelected: _selectedCategory ==
                           (selectedLanguage == 'Français'
-                              ? 'groceries'
+                              ? 'épiceries'
                               : 'groceries'),
                       selectedLanguage:
                       selectedLanguage, // Pass the selected language here
@@ -500,7 +513,7 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
   void _onCategorySelected(String category, int index) {
     setState(() {
       _selectedCategory =
-      category == 'All Items' ? 'all' : category.toLowerCase();
+      category == (selectedLanguage == 'Français'?'Tous les articles':'All Items') ? 'all' : category.toLowerCase();
       _scrollToCategory(index);
       _scrollToFirstProduct(); // Scroll to the top of the product list when the category changes
     });

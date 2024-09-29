@@ -539,16 +539,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<String?> _getProfileImageUrl() async {
     final user = _auth.currentUser;
     if (user != null) {
-      final List<String> extensions = ['jpg', 'jpeg', 'png', 'gif']; // Add other formats if needed
+      final List<String> extensions = ['png', 'jpg', 'jpeg', 'gif']; // Add other formats if needed
       for (String ext in extensions) {
         final storageRef = FirebaseStorage.instance
             .ref()
             .child('user_images')
             .child('${user.uid}.$ext');
         try {
-          return await storageRef.getDownloadURL();
+          // Attempt to get the download URL
+          final downloadUrl = await storageRef.getDownloadURL();
+
+          // If successful, return the download URL and stop further requests
+          return downloadUrl;
         } catch (e) {
-          // Continue to try the next extension if the current one fails
+          // Print error message, but continue to the next extension
           print(selectedLanguage == 'Français'
               ? 'Erreur lors de l\'obtention de l\'URL de l\'image avec .$ext : $e'
               : 'Error getting image URL with .$ext: $e');
@@ -557,4 +561,5 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
     return null; // Return null if none of the extensions work
   }
+
 }

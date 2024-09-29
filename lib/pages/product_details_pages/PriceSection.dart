@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/product.dart';
+import '../../main.dart';
 import 'DiagonalLinePainter.dart';
 
 class PriceSection extends StatelessWidget {
@@ -20,6 +21,9 @@ class PriceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final selectedLanguage =
+        AppState().selectedLanguage; // Get the current language
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -34,8 +38,10 @@ class PriceSection extends StatelessWidget {
               )),
           child: Column(
             children: [
-              const Text(
-                'Original Price',
+              Text(
+                selectedLanguage == 'Français'
+                    ? 'Prix Original'
+                    : 'Original Price',
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
               const SizedBox(height: 4),
@@ -48,6 +54,7 @@ class PriceSection extends StatelessWidget {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   Positioned.fill(
                     child: CustomPaint(
@@ -67,15 +74,18 @@ class PriceSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                'Price Now',
+              Text(
+                selectedLanguage == 'Français'
+                    ? 'Prix Maintenant'
+                    : 'Price Now',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
                   fontStyle: FontStyle.italic,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 4),
               Text(
@@ -104,14 +114,14 @@ class PriceSection extends StatelessWidget {
             child: Center(
               child: remainingStock > 0
                   ? const Icon(
-                Icons.check,
-                color: Colors.yellow,
-                size: 30,
-              )
+                      Icons.check,
+                      color: Colors.yellow,
+                      size: 30,
+                    )
                   : const Text(
-                '😢', // Sad emoji
-                style: TextStyle(fontSize: 30),
-              ),
+                      '😢', // Sad emoji
+                      style: TextStyle(fontSize: 30),
+                    ),
             ),
           ),
         ),
