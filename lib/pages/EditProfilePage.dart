@@ -301,7 +301,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    bool isDarkMode = themeNotifier.themeMode == ThemeMode.light ?false:true;
+    final isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?true:false;
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
@@ -313,7 +314,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: DayNightSwitch(
-              value: isDarkMode,
+              value: _isDarkMode,
               onChanged: _toggleTheme,
               moonImage: AssetImage('assets/moon.png'),
               sunImage: AssetImage('assets/sun.png'),

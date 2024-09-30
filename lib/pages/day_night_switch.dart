@@ -299,29 +299,29 @@ class _DayNightSwitchPainter extends ToggleablePainter {
     final double visualPosition;
     switch (textDirection) {
       case TextDirection.rtl:
-        visualPosition = 1.0 - currentValue;
+        visualPosition = currentValue; // No inversion for RTL
         break;
       case TextDirection.ltr:
-        visualPosition = currentValue;
+        visualPosition =  1.0 -currentValue; // Inverted for LTR
         break;
     }
 
-    final Color trackColor = Color.lerp(dayColor, nightColor, currentValue)!;
-    final Color thumbColor = Color.lerp(sunColor, moonColor, currentValue)!;
+    final Color trackColor = Color.lerp(nightColor, dayColor, currentValue)!;
+    final Color thumbColor = Color.lerp(moonColor, sunColor, currentValue)!;
 
     final ImageProvider? thumbImage =
-    isEnabled ? (currentValue < 0.5 ? sunImage : moonImage) : sunImage;
+    isEnabled ? (currentValue >= 0.5 ? sunImage : moonImage) : sunImage;
     final trackPaint = Paint()..color = trackColor;
     final linePaint = Paint()
       ..color = Colors.white
       ..strokeWidth =
-          _kTrackHeight * 0.05 + _kTrackHeight * 0.05 * (1 - currentValue)
+          _kTrackHeight * 0.05 + _kTrackHeight * 0.05 * ( currentValue)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
     final starPaint = Paint()
       ..color = Colors.white
-      ..strokeWidth = _kTrackHeight * 0.05 * currentValue
+      ..strokeWidth = _kTrackHeight * 0.05 * currentValue-1
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
@@ -397,7 +397,7 @@ class _DayNightSwitchPainter extends ToggleablePainter {
       Offset(
         offset.dx +
             _kTrackWidth * 0.2 +
-            (_kTrackWidth * 0.4) * (1 - currentValue),
+            (_kTrackWidth * 0.4) * ( currentValue),
         offset.dy + _kTrackHeight * 0.2,
       ),
       paint,
@@ -411,23 +411,25 @@ class _DayNightSwitchPainter extends ToggleablePainter {
       Offset(
         offset.dx +
             _kTrackWidth * 0.25 +
-            (_kTrackWidth * 0.3) * (1 - currentValue),
+            (_kTrackWidth * 0.3) * ( currentValue),
         offset.dy + _kTrackHeight * 0.8,
       ),
       paint,
     );
 
-    canvas.drawLine(
-      Offset(
-        offset.dx + _kTrackWidth * 0.1,
-        offset.dy + _kTrackHeight * 0.6,
-      ),
-      Offset(
-        offset.dx + _kTrackWidth * 0.1,
-        offset.dy + _kTrackHeight * 0.6,
-      ),
-      starPaint,
-    );
+    if(currentValue<0.5){
+      canvas.drawLine(
+        Offset(
+          offset.dx + _kTrackWidth * 0.1,
+          offset.dy + _kTrackHeight * 0.6,
+        ),
+        Offset(
+          offset.dx + _kTrackWidth * 0.1,
+          offset.dy + _kTrackHeight * 0.6,
+        ),
+        starPaint,
+      );
+    }
   }
 
   void _paintThumb(
@@ -478,7 +480,7 @@ class _DayNightSwitchPainter extends ToggleablePainter {
       Offset(
         offset.dx +
             _kTrackWidth * 0.35 +
-            (_kTrackWidth * 0.4) * (1 - currentValue),
+            (_kTrackWidth * 0.4) * ( currentValue),
         offset.dy + _kTrackHeight * 0.5,
       ),
       paint,

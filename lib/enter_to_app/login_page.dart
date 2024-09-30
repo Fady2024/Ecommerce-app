@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     // Update _isDarkMode based on the current theme
-    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?false:true;
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?true:false;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(

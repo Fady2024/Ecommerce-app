@@ -77,8 +77,8 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     // Update _isDarkMode based on the current theme
-    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light
-        ?false:true;
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?true:false;
+
     final List<Map<String, String>> _categoryImages = _getCategoryImages();
 
 
