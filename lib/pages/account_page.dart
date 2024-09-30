@@ -33,7 +33,6 @@ class _AccountPageState extends State<AccountPage> {
   String? _userEmail; // Add this variable
   String? _deviceId; // Add device ID variable
   late StreamSubscription<DatabaseEvent>? _userChangesSubscription; // Make it nullable
-  late ThemeNotifier _themeNotifier; // Store the theme notifier reference
 
   @override
   void initState() {
@@ -45,7 +44,6 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _themeNotifier = Provider.of<ThemeNotifier>(context); // Get the ThemeNotifier reference
     _getDeviceId();
   }
 
