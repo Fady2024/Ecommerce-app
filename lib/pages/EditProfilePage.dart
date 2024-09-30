@@ -11,7 +11,6 @@ import '../cubits/auth_cubit.dart';
 import '../cubits/user_profile_provider.dart';
 import '../enter_to_app/welcome_screen.dart';
 import '../main.dart';
-import 'day_night_switch.dart'; // Assuming ThemeNotifier is in your main.dart
 
 class EditProfilePage extends StatefulWidget {
   final VoidCallback? onProfileUpdated;
@@ -292,17 +291,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  // Toggle theme mode
-  void _toggleTheme(bool value) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    themeNotifier.toggleTheme(); // Toggle theme in your provider
-  }
+
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     final isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
-    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?true:false;
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
@@ -310,21 +304,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: Text(selectedLanguage == 'Français' ?'Modifier le profil':'Edit Profile'),
         backgroundColor: isDarkMode ? Colors.black : Colors.white,
         foregroundColor: isDarkMode ? Colors.white : Colors.black,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: DayNightSwitch(
-              value: _isDarkMode,
-              onChanged: _toggleTheme,
-              moonImage: AssetImage('assets/moon.png'),
-              sunImage: AssetImage('assets/sun.png'),
-              sunColor: Colors.yellow,
-              moonColor: Colors.white,
-              dayColor: Colors.blue,
-              nightColor: Color(0xFF393939),
-            ),
-          ),
-        ],
+
       ),
       body: SingleChildScrollView(
         child: Padding(
