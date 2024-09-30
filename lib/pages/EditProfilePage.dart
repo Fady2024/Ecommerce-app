@@ -301,7 +301,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    final isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
+    bool isDarkMode = themeNotifier.themeMode == ThemeMode.light ?false:true;
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,

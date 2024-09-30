@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     // Update _isDarkMode based on the current theme
-    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?false:true;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
@@ -277,8 +277,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                         : Colors.white,
                               ),
                             ),
-                            const TextSpan(
-                              text: 'S\'inscrire',
+                             TextSpan(
+                              text: selectedLanguage == 'Français'
+                                  ? 'S\'inscrire':"Sign Up",
                               style: TextStyle(color: Colors.red),
                             ),
                           ],

@@ -188,7 +188,8 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     // Update _isDarkMode based on the current theme
-    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;    bool isNameMissing =
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?false:true;
+    bool isNameMissing =
         _auth.currentUser?.email == null || _auth.currentUser!.email!.isEmpty;
     _selectedLanguage = AppState().selectedLanguage;
 

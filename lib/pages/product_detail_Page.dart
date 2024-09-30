@@ -231,7 +231,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final double discountedPrice = originalPrice * (1 - discountPercentage / 100);
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     // Update _isDarkMode based on the current theme
-    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?false:true;
     return Scaffold(
       appBar: AppBar(
         actions: [

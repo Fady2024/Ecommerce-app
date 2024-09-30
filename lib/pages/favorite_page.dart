@@ -56,7 +56,7 @@ class _FavoritePageState extends State<FavoritePage> {
               .toList();
           final themeNotifier = Provider.of<ThemeNotifier>(context);
           // Update _isDarkMode based on the current theme
-          bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
+          bool _isDarkMode = themeNotifier.themeMode == ThemeMode.light ?false:true;
           return Scaffold(
             appBar: AppBar(
               title: selectedLanguage == 'Français'
