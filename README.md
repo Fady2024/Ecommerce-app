@@ -15,9 +15,12 @@ This e-commerce app was developed by **:**
    - [Dark Mode](#dark-mode)
    - [Search Functionality](#search-functionality)
    - [Product Details Page](#product-details-page)
+   - [Share Option](#share-option)
    - [Comments Section](#comments-section)
    - [Filters](#filters)
    - [Account Settings](#account-settings)
+   - [Translation Feature](#translation-feature)
+   - [Edit Profile](#edit-profile)
    - [About Us](#about-us)
 2. [Technologies Used](#technologies-used)
 3. [Installation](#installation)
@@ -48,8 +51,10 @@ This e-commerce app was developed by **:**
 
 ### Login and Signup
 - Users can either log in or sign up for a new account.
-- The signup process allows users to upload a profile picture, and enter their name, email, and password.
+- The signup process allows users to upload a profile picture, enter their name, email, and password and now includes an option to input their phone number.
+- A "Forgot Password" feature enables users to reset their passwords by receiving a reset email.
 - An alternative method is signing up using a Google account.
+
 <div style="display: flex; justify-content: space-around;">
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Login%20.png" alt="Login" width="300"/>
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Signup.png" alt="Signup" width="300"/>
@@ -58,28 +63,40 @@ This e-commerce app was developed by **:**
 ### Home Page (Discover)
 - The home page displays a carousel showcasing different categories like beauty, fragrances, furniture, and groceries.
 - Users can browse items within a specific category and view details, including the old and new prices of products.
-
+<div style="display: flex; justify-content: space-around;">
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Home.png" alt="Home" width="300"/>
+
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Home%202.png" alt="Home" width="300"/>
+</div>
 
 ### Add to Cart
 - Products can be added to the shopping cart, and users can adjust the quantity.
 - The app shows available stock, and users can't add more items than the stock allows.
 - Once the stock runs out, the product is marked as "Out of Stock" in real-time.
-
+<div style="display: flex; justify-content: space-around;">
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Cart%20Page.png" alt="Cart Page" width="300"/>
+
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Empty%20Cart%20Page.png" alt="Cart Page" width="300"/>
+</div>
 
 ### Add to Favorites
 - Users can add or remove items from their favorites list, with the old and new prices displayed.
 - The favorites list is dynamically updated.
 - Each user's favorite products are linked with their email in Firebase, ensuring that each customer has their list of favorite products.
-
+<div style="display: flex; justify-content: space-around;">
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Favorites%20Page.png" alt="Favorites Page" width="300"/>
+
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Empty%20Favorites%20Page.png" alt="Favorites Page" width="300"/>
+</div>
 
 ### Dark Mode
 - The app supports Dark Mode for a more comfortable viewing experience, reducing eye strain.
 - Users can toggle between Dark Mode and Light Mode.
-
+<div style="display: flex; justify-content: space-around;">
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Dark%20mode.png" alt="Dark Mode" width="300"/>
+
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Dark%20mode%202.png" alt="Dark Mode" width="300"/>
+</div>
 
 ### Search Functionality
 - The search bar provides real-time suggestions while typing and shows product ratings and comments.
@@ -92,6 +109,13 @@ This e-commerce app was developed by **:**
 - Users can view comments and replies related to the product.
 
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Products%20Page.png" alt="Products Page" width="300"/>
+
+### Share Option
+- The app allows users to share products with anyone via social media, email, or any other sharing platform.
+- The "Share" button on the product details page generates a shareable link or product image, making it easy for users to share their favorite items with friends or family.
+- This feature enhances product visibility and engagement beyond the app.
+
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Share.png" alt="Share Option" width="300"/>
 
 ### Comments Section
 - Users can leave comments on products.
@@ -107,13 +131,32 @@ This e-commerce app was developed by **:**
 ### Account Settings
 - Users can update their profile picture, username, and password.
 - The app supports multiple languages, including English, Arabic, French, and Spanish.
-
+<div style="display: flex; justify-content: space-around;">
 <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Account%20page.png" alt="Account Page" width="300"/>
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Account%20page%20guest.png" alt="Account Page" width="300"/>
+</div>
+
+### Translation Feature
+- The app includes a **translation feature** that allows users to switch between different languages, including English and French easily.
+- This feature ensures that customers from different regions can enjoy a personalized shopping experience in their preferred language.
+<div style="display: flex; justify-content: space-around;">
+    <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Translate%20.png" alt="Onboarding Screen 2" width="300"/>
+   <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Loading%20Translate%20page.png" alt="Onboarding Screen 1" width="300"/>
+       <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Translate%200.png" alt="Onboarding Screen 3" width="300"/> 
+
+   <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Translate%201.png" alt="Onboarding Screen 3" width="300"/>
+
+</div>
+
+### Edit Profile
+- Users can update their profile information, including changing their profile picture, name, phone number, and password.
+- The option to delete their account is also available, allowing users to manage their accounts effectively.
+
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Edit%20Profile%20page.png" alt="Edit Profile Page" width="300"/>
 
 ### About Us
 - The app provides details about the developers.
-
-<!-- Add image if available -->
+<img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Dev.png" alt="Account Page" width="300"/>
 
 ## Technologies Used
 - **Flutter**: For building the app.
