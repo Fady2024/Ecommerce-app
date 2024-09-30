@@ -15,16 +15,28 @@ class FavoritePage extends StatefulWidget {
   State<FavoritePage> createState() => _FavoritePageState();
 }
 class _FavoritePageState extends State<FavoritePage> {
+  late final FadyCardCubit _fadyCardCubit;
+
   final selectedLanguage = AppState().selectedLanguage; // Get the current language
-  bool _isDarkMode = false; // Initialize based on your app's logic or provider
+
+  @override
+  void initState() {
+    super.initState();
+    _fadyCardCubit = context.read<FadyCardCubit>();
+    // Set up a listener to react to changes in the favorite items
+    _fadyCardCubit.loadProducts(); // Initial load
+  }
+
+  @override
+  void dispose() {
+    // Clean up the listener when the page is disposed
+    super.dispose();
+  }
+
   // Toggle theme mode
   void _toggleTheme(bool value) {
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    setState(() {
-      _isDarkMode = value;
-      themeNotifier
-          .toggleTheme(); // Assuming this method switches the theme in your provider
-    });
+    themeNotifier.toggleTheme(); // Toggle theme in your provider
   }
   @override
   Widget build(BuildContext context) {
@@ -42,7 +54,9 @@ class _FavoritePageState extends State<FavoritePage> {
           final favoriteProducts = shopItems
               .where((product) => favoriteItemIds.contains(product.id))
               .toList();
-
+          final themeNotifier = Provider.of<ThemeNotifier>(context);
+          // Update _isDarkMode based on the current theme
+          bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
           return Scaffold(
             appBar: AppBar(
               title: selectedLanguage == 'Français'

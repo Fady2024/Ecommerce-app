@@ -41,9 +41,4 @@ class UserProfileProvider extends ChangeNotifier {
     }
   }
 
-  void clearUserProfile() {
-    _profileImageUrl = null;
-    _displayName = null;
-    notifyListeners();
-  }
 }

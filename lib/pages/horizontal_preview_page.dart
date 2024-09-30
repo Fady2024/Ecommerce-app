@@ -22,19 +22,14 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
   late final List<Product> products;
   String _selectedCategory = 'all'; // Default category
   String _selectedFilter = 'None'; // Default filter
-  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   final ScrollController _categoryScrollController = ScrollController(); // ScrollController to control the categories ListView
   final ScrollController _productScrollController = ScrollController(); // ScrollController to control the products ListView
   final selectedLanguage = AppState().selectedLanguage; // Get the current language
 
+  // Toggle theme mode
   void _toggleTheme(bool value) {
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    setState(() {
-      print(selectedLanguage);
-      _isDarkMode = value;
-      themeNotifier
-          .toggleTheme(); // Assuming this method switches the theme in your provider
-    });
+    themeNotifier.toggleTheme(); // Toggle theme in your provider
   }
   void _scrollToCategory(int index) {
     final selectedLanguage =
@@ -81,6 +76,8 @@ class HorizontalPreviewPageState extends State<HorizontalPreviewPage> {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    // Update _isDarkMode based on the current theme
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
     final List<Map<String, String>> _categoryImages = _getCategoryImages();
 
 

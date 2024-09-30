@@ -31,7 +31,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final selectedLanguage = AppState().selectedLanguage; // Get the current language
 
   bool _isLoading = false;
-  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   bool _isPasswordVisible = false; // Added for password visibility
   String? _joinDate;
 
@@ -296,11 +295,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   // Toggle theme mode
   void _toggleTheme(bool value) {
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    setState(() {
-      _isDarkMode = value;
-      themeNotifier
-          .toggleTheme(); // Assuming this method switches the theme in your provider
-    });
+    themeNotifier.toggleTheme(); // Toggle theme in your provider
   }
 
   @override
@@ -318,7 +313,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: DayNightSwitch(
-              value: _isDarkMode,
+              value: isDarkMode,
               onChanged: _toggleTheme,
               moonImage: AssetImage('assets/moon.png'),
               sunImage: AssetImage('assets/sun.png'),

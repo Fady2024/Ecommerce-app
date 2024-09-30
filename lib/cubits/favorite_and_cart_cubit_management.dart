@@ -20,6 +20,9 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
       if (user != null) {
         _loadFavoriteProducts(user.email!); // Load favorites for the authenticated user
         loadCartProducts(); // Load cart items for the authenticated user
+        transferGuestFavoritesToUser(); // Transfer favorites from guest to user
+        _listenForFavoritesChanges(user.email!);
+        _listenForCartChanges(user.email!);
       } else {
         // Handle guest logic if necessary
         _loadGuestFavorites(); // Load favorites for guest
@@ -65,26 +68,11 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
 
     try {
       final snapshot = await userFavoritesRef.get();
-      final favoriteIds = snapshot.value;
-      _favoriteItemIds.clear(); // Clear previous data
-
-      if (favoriteIds is List) {
-        _favoriteItemIds.addAll(favoriteIds.map((id) => id as int));
-      } else if (favoriteIds != null) {
-        _favoriteItemIds.addAll([favoriteIds].map((id) => id as int));
-      }
-
-      emit(FavoritesAndCartUpdated(
-        shopItems: _shopItems,
-        cartItems: _cartItems,
-        favoriteItemIds: _favoriteItemIds.toList(),
-        totalPrice: _calculateTotal(),
-      ));
+      _updateFavoriteIds(snapshot);
     } catch (error) {
       emit(FavoritesAndCartError(selectedLanguage == 'Français'
           ? 'Échec du chargement des produits favoris: ${error.toString()}'
-          : 'Failed to load user favorite products: ${error.toString()}'
-      ));
+          : 'Failed to load user favorite products: ${error.toString()}'));
     }
   }
 
@@ -94,26 +82,99 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
 
     try {
       final snapshot = await guestFavoritesRef.get();
-      final favoriteIds = snapshot.value;
-      _favoriteItemIds.clear(); // Clear previous data
-
-      if (favoriteIds is List) {
-        _favoriteItemIds.addAll(favoriteIds.map((id) => id as int));
-      } else if (favoriteIds != null) {
-        _favoriteItemIds.addAll([favoriteIds].map((id) => id as int));
-      }
-
-      emit(FavoritesAndCartUpdated(
-        shopItems: _shopItems,
-        cartItems: _cartItems,
-        favoriteItemIds: _favoriteItemIds.toList(),
-        totalPrice: _calculateTotal(),
-      ));
+      _updateFavoriteIds(snapshot);
     } catch (error) {
       emit(FavoritesAndCartError(selectedLanguage == 'Français'
           ? 'Échec du chargement des produits favoris des invités: ${error.toString()}'
-          : 'Failed to load guest favorite products: ${error.toString()}'
-      ));
+          : 'Failed to load guest favorite products: ${error.toString()}'));
+    }
+  }
+
+  Future<void> _updateFavoriteIds(DataSnapshot snapshot) async {
+    _favoriteItemIds.clear(); // Clear previous data
+    final favoriteIds = snapshot.value;
+
+    if (favoriteIds is List) {
+      _favoriteItemIds.addAll(favoriteIds.map((id) => id as int));
+    } else if (favoriteIds != null) {
+      _favoriteItemIds.addAll([favoriteIds].map((id) => id as int));
+    }
+
+    emit(FavoritesAndCartUpdated(
+      shopItems: _shopItems,
+      cartItems: _cartItems,
+      favoriteItemIds: _favoriteItemIds.toList(),
+      totalPrice: _calculateTotal(),
+    ));
+  }
+
+  Future<void> _listenForFavoritesChanges(String email) async {
+    final sanitizedEmail = _sanitizeEmail(email);
+    final userFavoritesRef = _userRef.child('accountUsers').child(sanitizedEmail).child('favorites');
+
+    userFavoritesRef.onValue.listen((event) {
+      _updateFavoriteIds(event.snapshot);
+    });
+  }
+
+  Future<String> _loadThemeDataFromFirebase(String email) async {
+    final deviceId = await _getDeviceId(); // Get device ID for guest
+    final userThemeRef = _userRef.child('guestUsers').child(deviceId).child('Theme Mode');
+
+    try {
+      final snapshot = await userThemeRef.get();
+      if (snapshot.exists) {
+        return snapshot.value as String; // Adjust based on your theme data structure
+      }
+    } catch (error) {
+      emit(FavoritesAndCartError(selectedLanguage == 'Français'
+          ? 'Échec du chargement du thème: ${error.toString()}'
+          : 'Failed to load theme: ${error.toString()}'));
+    }
+    return ''; // Return a default value if theme data is not found or an error occurs
+  }
+
+  Future<void> transferGuestFavoritesToUser() async {
+    final user = _auth.currentUser;
+    final deviceId = await _getDeviceId(); // Get device ID for guest
+
+    if (user != null) {
+      final sanitizedEmail = _sanitizeEmail(user.email!);
+      final userFavoritesRef = _userRef.child('accountUsers').child(sanitizedEmail).child('favorites');
+      final guestFavoritesRef = _userRef.child('guestUsers').child(deviceId).child('favorites');
+
+      try {
+        // Fetch existing user favorites
+        final userSnapshot = await userFavoritesRef.get();
+        final userFavorites = userSnapshot.value is List
+            ? List<int>.from((userSnapshot.value as List).map((item) => item as int))
+            : <int>[]; // Initialize as an empty list if null or not a list
+
+        // Fetch guest favorites
+        final guestSnapshot = await guestFavoritesRef.get();
+        final guestFavorites = guestSnapshot.value is List
+            ? List<int>.from((guestSnapshot.value as List).map((item) => item as int))
+            : <int>[]; // Initialize as an empty list if null or not a list
+
+        // Combine favorites
+        final combinedFavorites = <int>{...userFavorites, ...guestFavorites}; // Use a Set to avoid duplicates
+        final themeData = await _loadThemeDataFromFirebase(user.email!);
+
+        // Save combined favorites to user account
+        await userFavoritesRef.set(combinedFavorites.toList());
+
+        // Optionally save the theme data to the user's profile if needed
+        final userThemeRef = _userRef.child('accountUsers').child(sanitizedEmail).child('Theme Mode');
+        await userThemeRef.set(themeData); // Save theme data if needed
+        await _userRef.child('accountUsers').child(sanitizedEmail).child('language').set(AppState().selectedLanguage=="Français"?'fr':'en');
+
+        // Remove guest favorites
+        await guestFavoritesRef.remove();
+      } catch (error) {
+        emit(FavoritesAndCartError(selectedLanguage == 'Français'
+            ? 'Échec du transfert des favoris: ${error.toString()}'
+            : 'Failed to transfer favorites: ${error.toString()}'));
+      }
     }
   }
 
@@ -131,6 +192,7 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
     }
   }
 
+
   Future<void> loadCartProducts() async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -139,33 +201,7 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
 
       try {
         final snapshot = await userCartRef.get();
-        final cartData = snapshot.value as List<dynamic>?;
-        _cartItems.clear();
-        if (cartData != null) {
-          for (var item in cartData) {
-            final itemData = item as Map<dynamic, dynamic>;
-            final productId = itemData['productId'] as int;
-            final quantity = itemData['quantity'] as int;
-
-            final product = _shopItems.firstWhere(
-                  (product) => product.id == productId,
-            );
-            _cartItems.add({
-              'item': product,
-              'quantity': quantity,
-            });
-          }
-          print('Cart items loaded: $_cartItems'); // Add this for debugging
-        } else {
-          print('Cart is empty.');
-        }
-
-        emit(FavoritesAndCartUpdated(
-          shopItems: _shopItems,
-          cartItems: _cartItems,
-          favoriteItemIds: _favoriteItemIds.toList(),
-          totalPrice: _calculateTotal(),
-        ));
+        _updateCartItems(snapshot);
       } catch (error) {
         emit(FavoritesAndCartError(selectedLanguage == 'Français'
             ? 'Échec du chargement des articles du panier: ${error.toString()}'
@@ -173,6 +209,43 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
       }
     }
   }
+
+  Future<void> _updateCartItems(DataSnapshot snapshot) async {
+    _cartItems.clear();
+    final cartData = snapshot.value as List<dynamic>?;
+    if (cartData != null) {
+      for (var item in cartData) {
+        final itemData = item as Map<dynamic, dynamic>;
+        final productId = itemData['productId'] as int;
+        final quantity = itemData['quantity'] as int;
+
+        final product = _shopItems.firstWhere(
+              (product) => product.id == productId,
+        );
+        _cartItems.add({
+          'item': product,
+          'quantity': quantity,
+        });
+      }
+    }
+
+    emit(FavoritesAndCartUpdated(
+      shopItems: _shopItems,
+      cartItems: _cartItems,
+      favoriteItemIds: _favoriteItemIds.toList(),
+      totalPrice: _calculateTotal(),
+    ));
+  }
+
+  Future<void> _listenForCartChanges(String email) async {
+    final sanitizedEmail = _sanitizeEmail(email);
+    final userCartRef = _userRef.child('accountUsers').child(sanitizedEmail).child('carts');
+
+    userCartRef.onValue.listen((event) {
+      _updateCartItems(event.snapshot);
+    });
+  }
+
 
   Future<void> _saveCartProducts() async {
     final user = _auth.currentUser;
@@ -346,3 +419,5 @@ class FadyCardCubit extends Cubit<FavoritesAndCartState> {
     return deviceId;
   }
 }
+
+

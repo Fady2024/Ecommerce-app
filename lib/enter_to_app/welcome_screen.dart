@@ -12,19 +12,19 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   final selectedLanguage = AppState().selectedLanguage; // Get the current language
 
+  // Toggle theme mode
   void _toggleTheme(bool value) {
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    setState(() {
-      _isDarkMode = value;
-      themeNotifier.toggleTheme(); // Assuming this method switches the theme in your provider
-    });
+    themeNotifier.toggleTheme(); // Toggle theme in your provider
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    // Update _isDarkMode based on the current theme
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
     return Scaffold(
       appBar: AppBar(
         actions: [

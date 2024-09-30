@@ -23,7 +23,6 @@ class _SignInScreenState extends State<SignInScreen> {
       AppState().selectedLanguage; // Get the current language
   bool _isLoading = false;
   bool _obscurePassword = true; // New variable for password visibility
-  bool _isDarkMode = false; // Initialize based on your app's logic or provider
 
   void _showSnackBar(String title, String message, Icon icon) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -102,17 +101,14 @@ class _SignInScreenState extends State<SignInScreen> {
   // Toggle theme mode
   void _toggleTheme(bool value) {
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    setState(() {
-      _isDarkMode = value;
-      themeNotifier
-          .toggleTheme(); // Assuming this method switches the theme in your provider
-    });
+    themeNotifier.toggleTheme(); // Toggle theme in your provider
   }
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-
+    // Update _isDarkMode based on the current theme
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(

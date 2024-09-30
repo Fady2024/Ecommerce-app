@@ -32,7 +32,6 @@ class _AccountPageState extends State<AccountPage> {
   String? _fullName;
   String? _userEmail; // Add this variable
   String? _deviceId; // Add device ID variable
-  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   late StreamSubscription<DatabaseEvent>? _userChangesSubscription; // Make it nullable
   late ThemeNotifier _themeNotifier; // Store the theme notifier reference
 
@@ -110,28 +109,42 @@ class _AccountPageState extends State<AccountPage> {
 
   void _listenForUserChanges() {
     final user = _auth.currentUser;
+
     if (user != null) {
       final sanitizedEmail = _sanitizeEmail(user.email!);
-      _userChangesSubscription = _userRef.child('accountUsers').child(sanitizedEmail).onValue.listen((event) {
+      _userChangesSubscription = _userRef
+          .child('accountUsers')
+          .child(sanitizedEmail)
+          .onValue
+          .listen((event) {
         if (mounted) {
           final data = event.snapshot.value as Map<dynamic, dynamic>?;
           setState(() {
             _fullName = data?['fullName'] as String?;
-            _selectedLanguage = data?['language'] == 'fr' ? 'Français' : 'English';
+            _selectedLanguage =
+            data?['language'] == 'fr' ? 'Français' : 'English';
           });
         }
       });
     } else if (_deviceId != null) {
-      _userChangesSubscription = _userRef.child('guestUsers').child(_deviceId!).onValue.listen((event) {
+      _userChangesSubscription = _userRef
+          .child('guestUsers')
+          .child(_deviceId!)
+          .onValue
+          .listen((event) {
         if (mounted) {
           final data = event.snapshot.value as Map<dynamic, dynamic>?;
           setState(() {
-            _selectedLanguage = data?['language'] == 'fr' ? 'Français' : 'English';
+            _selectedLanguage =
+            data?['language'] == 'fr' ? 'Français' : 'English';
           });
         }
       });
+    } else {
+      _userChangesSubscription = null;
     }
   }
+
 
   void _refreshAccountPage() {
     setState(() {
@@ -157,24 +170,27 @@ class _AccountPageState extends State<AccountPage> {
     return email.replaceAll(RegExp(r'[.#$[\]]'), ',');
   }
 
+  // Toggle theme mode
   void _toggleTheme(bool value) {
-    setState(() {
-      _isDarkMode = value;
-      _themeNotifier.toggleTheme(); // Use the saved reference
-    });
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    themeNotifier.toggleTheme(); // Toggle theme in your provider
   }
 
   @override
   void dispose() {
-    _userChangesSubscription?.cancel(); // Cancel the listener safely
+    if (_userChangesSubscription != null) {
+      _userChangesSubscription!.cancel();
+    }
     super.dispose();
   }
+
 
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    bool isNameMissing =
+    // Update _isDarkMode based on the current theme
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;    bool isNameMissing =
         _auth.currentUser?.email == null || _auth.currentUser!.email!.isEmpty;
     _selectedLanguage = AppState().selectedLanguage;
 
@@ -406,10 +422,21 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                   Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                     child: GestureDetector(
-                      onTap: () => _signOut(),
+                      onTap: () {
+                        if (isNameMissing) {
+                          // Navigate to WelcomeScreen if the name is missing
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => WelcomeScreen(),
+                            ),
+                          );
+                        } else {
+                          // Perform logout if the name is not missing
+                          _signOut();
+                        }
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -418,29 +445,32 @@ class _AccountPageState extends State<AccountPage> {
                               Container(
                                 margin: EdgeInsets.only(right: 10.0),
                                 child: CircleAvatar(
-                                  backgroundColor:
-                                      themeNotifier.themeMode == ThemeMode.light
-                                          ? Color(0xFFE1E7FA)
-                                          : Color(0xFF44432D),
+                                  backgroundColor: themeNotifier.themeMode == ThemeMode.light
+                                      ? Color(0xFFE1E7FA)
+                                      : Color(0xFF44432D),
                                   child: Icon(
-                                    Icons.exit_to_app,
-                                    color: themeNotifier.themeMode ==
-                                            ThemeMode.dark
+                                    isNameMissing
+                                        ? Icons.arrow_back // Back icon when name is missing
+                                        : Icons.exit_to_app, // Logout icon otherwise
+                                    color: themeNotifier.themeMode == ThemeMode.dark
                                         ? Color(0xFFE3E16B)
                                         : Color(0xFF36399C),
                                   ),
                                 ),
                               ),
                               Text(
-                                _selectedLanguage == 'Français'
+                                isNameMissing
+                                    ? _selectedLanguage == 'Français'
+                                    ? 'Retour'
+                                    : 'Back'
+                                    : _selectedLanguage == 'Français'
                                     ? 'Se déconnecter'
                                     : 'Logout',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  color:
-                                      themeNotifier.themeMode == ThemeMode.light
-                                          ? Colors.redAccent
-                                          : Colors.red,
+                                  color: themeNotifier.themeMode == ThemeMode.light
+                                      ? Colors.redAccent
+                                      : Colors.red,
                                 ),
                               ),
                             ],
@@ -448,7 +478,7 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),

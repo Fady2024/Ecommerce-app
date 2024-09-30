@@ -37,7 +37,6 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _hasSpecialChar = false;
   bool _isLoading = false;
   bool _obscureText = true;
-  bool _isDarkMode = false; // Initialize based on your app's logic or provider
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'EG');
 
   void _togglePasswordVisibility() {
@@ -286,18 +285,17 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  // Toggle theme mode
   void _toggleTheme(bool value) {
     final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
-    setState(() {
-      _isDarkMode = value;
-      themeNotifier
-          .toggleTheme(); // Assuming this method switches the theme in your provider
-    });
+    themeNotifier.toggleTheme(); // Toggle theme in your provider
   }
 
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    // Update _isDarkMode based on the current theme
+    bool _isDarkMode = themeNotifier.themeMode == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(
