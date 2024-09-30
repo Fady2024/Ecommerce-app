@@ -33,33 +33,12 @@ void main() async {
 }
 
 class ThemeNotifier extends ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode? _themeMode;  // Use nullable type to avoid initialization error
   final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  ThemeMode get themeMode => _themeMode;
 
-  void toggleTheme() {
-    _themeMode =
-    _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    _saveThemeModeToFirebase(); // Save theme mode when toggling
-    notifyListeners();
-  }
-
-  Future<void> _saveThemeModeToFirebase() async {
-    final user = FirebaseAuth.instance.currentUser;
-    final userRef = FirebaseDatabase.instance.ref('users');
-
-    if (user != null) {
-      // Save for authenticated user in 'accountUsers'
-      String sanitizedEmail = _sanitizeEmail(user.email!);
-      await userRef.child('accountUsers').child(sanitizedEmail).child('Theme Mode').set(
-          _themeMode == ThemeMode.dark ? 'dark' : 'light');
-    } else {
-      // Save for guest user in 'guestUsers'
-      String deviceId = await _getDeviceId(); // Get device ID
-      final deviceRef = FirebaseDatabase.instance.ref('users').child('guestUsers');
-      await deviceRef.child(deviceId).child('Theme Mode').set(
-          _themeMode == ThemeMode.dark ? 'dark' : 'light');
-    }
+  ThemeMode get themeMode {
+    // Return system mode if _themeMode is not yet loaded (null)
+    return _themeMode ?? ThemeMode.system;
   }
 
   Future<void> loadThemeModeFromFirebase() async {
@@ -67,7 +46,7 @@ class ThemeNotifier extends ChangeNotifier {
     final userRef = FirebaseDatabase.instance.ref('users');
 
     if (user != null) {
-      // Load theme for authenticated user from 'accountUsers'
+      // Load theme for authenticated user
       String sanitizedEmail = _sanitizeEmail(user.email!);
       DatabaseEvent themeEvent = await userRef
           .child('accountUsers')
@@ -79,19 +58,54 @@ class ThemeNotifier extends ChangeNotifier {
       if (themeSnapshot.exists) {
         final themeValue = themeSnapshot.value as String;
         _themeMode = themeValue == 'dark' ? ThemeMode.dark : ThemeMode.light;
+      } else {
+        // If no value exists in Firebase, set to system default
+        _themeMode = ThemeMode.system;
       }
     } else {
-      // Load theme for guest user from 'guestUsers'
+      // Load theme for guest user
       String deviceId = await _getDeviceId();
       final deviceRef = userRef.child('guestUsers');
-      DatabaseEvent themeEvent =
-      await deviceRef.child(deviceId).child('Theme Mode').once();
+      DatabaseEvent themeEvent = await deviceRef.child(deviceId).child('Theme Mode').once();
       final themeSnapshot = themeEvent.snapshot;
 
       if (themeSnapshot.exists) {
         final themeValue = themeSnapshot.value as String;
         _themeMode = themeValue == 'dark' ? ThemeMode.dark : ThemeMode.light;
+      } else {
+        // If no value exists in Firebase, set to system default
+        _themeMode = ThemeMode.system;
       }
+    }
+
+    notifyListeners();  // Notify listeners after the theme mode is set
+  }
+
+  void toggleTheme() {
+    // Toggle between light and dark mode
+    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    _saveThemeModeToFirebase();  // Save the toggled theme to Firebase
+    notifyListeners();
+  }
+
+  Future<void> _saveThemeModeToFirebase() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userRef = FirebaseDatabase.instance.ref('users');
+
+    if (user != null) {
+      // Save for authenticated user in 'accountUsers'
+      String sanitizedEmail = _sanitizeEmail(user.email!);
+      await userRef
+          .child('accountUsers')
+          .child(sanitizedEmail)
+          .child('Theme Mode')
+          .set(_themeMode == ThemeMode.dark ? 'dark' : 'light');
+    } else {
+      // Save for guest user in 'guestUsers'
+      String deviceId = await _getDeviceId();
+      final deviceRef = FirebaseDatabase.instance.ref('users').child('guestUsers');
+      await deviceRef.child(deviceId).child('Theme Mode')
+          .set(_themeMode == ThemeMode.dark ? 'dark' : 'light');
     }
   }
 
@@ -99,10 +113,10 @@ class ThemeNotifier extends ChangeNotifier {
     String deviceId = '';
     if (defaultTargetPlatform == TargetPlatform.android) {
       AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
-      deviceId = _sanitizeEmail(androidInfo.id); // Unique ID on Android
+      deviceId = _sanitizeEmail(androidInfo.id);  // Unique ID on Android
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
-      deviceId = iosInfo.identifierForVendor!; // Unique ID on iOS
+      deviceId = iosInfo.identifierForVendor!;  // Unique ID on iOS
     }
     return deviceId;
   }
@@ -111,6 +125,7 @@ class ThemeNotifier extends ChangeNotifier {
     return email.replaceAll(RegExp(r'[.#$[\]]'), ',');
   }
 }
+
 
 class AppState with ChangeNotifier {
   static final AppState _instance = AppState._internal();

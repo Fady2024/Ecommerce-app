@@ -33,12 +33,22 @@ class _AccountPageState extends State<AccountPage> {
   String? _userEmail; // Add this variable
   String? _deviceId; // Add device ID variable
   late StreamSubscription<DatabaseEvent>? _userChangesSubscription; // Make it nullable
-
+  String? profileImageUrl;
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
     _listenForUserChanges();
     _loadUserData();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    final imageUrl = await _getProfileImageUrl();
+    setState(() {
+      profileImageUrl = imageUrl;
+      isLoading = false;
+    });
   }
 
   @override
@@ -489,144 +499,128 @@ class _AccountPageState extends State<AccountPage> {
 
   Widget _buildAccountHeader() {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    return FutureBuilder<String?>(
-      future: _getProfileImageUrl(),
-      builder: (context, snapshot) {
-        String displayName = _fullName ?? _auth.currentUser?.displayName ?? 'A';
-        String initialLetter =
-            displayName.isNotEmpty ? displayName[0].toUpperCase() : 'A';
-        bool isNameMissing = _auth.currentUser?.email == null ||
-            _auth.currentUser!.email!.isEmpty;
+    String displayName = _fullName ?? _auth.currentUser?.displayName ?? 'A';
+    String initialLetter = displayName.isNotEmpty ? displayName[0].toUpperCase() : 'A';
+    bool isNameMissing = _auth.currentUser?.email == null || _auth.currentUser!.email!.isEmpty;
 
-        return Column(
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.bottomRight,
           children: [
-            Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                CircleAvatar(
-                  radius: 50.0,
-                  backgroundColor: Colors.grey.shade200,
-                  backgroundImage:
-                      snapshot.connectionState == ConnectionState.waiting
-                          ? null
-                          : (snapshot.hasData && snapshot.data != null
-                              ? CachedNetworkImageProvider(snapshot.data!)
-                              : null),
-                  child: snapshot.connectionState == ConnectionState.waiting
-                      ? Lottie.asset(
-                          'lib/data/Animation - 1727010739635.json',
-                          width: 150,
-                          height: 150,
-                        )
-                      : (snapshot.hasData && snapshot.data != null
-                          ? null
-                          : Text(
-                              initialLetter,
-                              style: const TextStyle(
-                                  fontSize: 40.0, color: Colors.black),
-                            )),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    if (!isNameMissing) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => EditProfilePage(
-                                  onProfileUpdated:
-                                      _refreshAccountPage, // Pass the refresh function
-                                )),
-                      );
-                    } else {
-                      // Optionally, show an alert or message if the name is missing
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(_selectedLanguage == 'Français'
-                                ? 'Veuillez vous connecter pour modifier vos informations de profil.'
-                                : 'Please log in to edit your profile information.')),
-                      );
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      color: Colors.yellow,
-                      shape: BoxShape.circle,
+            CircleAvatar(
+              radius: 50.0,
+              backgroundColor: Colors.grey.shade200,
+              backgroundImage: (profileImageUrl != null)
+                  ? CachedNetworkImageProvider(profileImageUrl!)
+                  : null, // Display image if available
+              child: isLoading
+                  ? Lottie.asset(
+                'lib/data/Animation - 1727010739635.json',
+                width: 150,
+                height: 150,
+              )
+                  : (profileImageUrl == null
+                  ? Text(
+                initialLetter,
+                style: const TextStyle(fontSize: 40.0, color: Colors.black),
+              )
+                  : null), // Display initial letter if no image
+            ),
+            GestureDetector(
+              onTap: () {
+                if (!isNameMissing) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => EditProfilePage(
+                          onProfileUpdated: _refreshAccountPage,
+                        )),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(_selectedLanguage == 'Français'
+                          ? 'Veuillez vous connecter pour modifier vos informations de profil.'
+                          : 'Please log in to edit your profile information.'),
                     ),
-                    child: const Icon(
-                      Icons.edit,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                  ),
+                  );
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(6.0),
+                decoration: BoxDecoration(
+                  color: Colors.yellow,
+                  shape: BoxShape.circle,
                 ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            Text(
-              displayName != 'A'
-                  ? displayName
-                  : _selectedLanguage == 'Français'
-                      ? 'Nom d\'utilisateur'
-                      : 'User Name',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                  ),
-            ),
-            Text(
-              _selectedLanguage == 'Français'
-                  ? (_auth.currentUser?.email ?? 'utilisateur@example.com')
-                  : (_auth.currentUser?.email ?? 'user@example.com'),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: 15.0,
-                    color: themeNotifier.themeMode == ThemeMode.light
-                        ? Color(0xFF606060)
-                        : Color(0xFFCECECE),
-                  ),
-            ),
-            if (isNameMissing)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  _selectedLanguage == 'Français'
-                      ? "Il semble que vous ne vous soyez pas encore connecté. Allez vous connecter pour accéder à votre profil."
-                      : "It looks like you haven’t signed in yet. Go to Sign In to access your profile.",
-                  style: const TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
+                child: const Icon(
+                  Icons.edit,
+                  color: Colors.black,
+                  size: 20,
                 ),
               ),
+            ),
           ],
-        );
-      },
+        ),
+        const SizedBox(height: 16.0),
+        Text(
+          displayName != 'A'
+              ? displayName
+              : _selectedLanguage == 'Français'
+              ? 'Nom d\'utilisateur'
+              : 'User Name',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        Text(
+          _selectedLanguage == 'Français'
+              ? (_auth.currentUser?.email ?? 'utilisateur@example.com')
+              : (_auth.currentUser?.email ?? 'user@example.com'),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontSize: 15.0,
+            color: themeNotifier.themeMode == ThemeMode.light
+                ? const Color(0xFF606060)
+                : const Color(0xFFCECECE),
+          ),
+        ),
+        if (isNameMissing)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              _selectedLanguage == 'Français'
+                  ? "Il semble que vous ne vous soyez pas encore connecté. Allez vous connecter pour accéder à votre profil."
+                  : "It looks like you haven’t signed in yet. Go to Sign In to access your profile.",
+              style: const TextStyle(
+                color: Colors.redAccent,
+                fontSize: 14.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+      ],
     );
   }
+
   Future<String?> _getProfileImageUrl() async {
     final user = _auth.currentUser;
     if (user != null) {
-      final List<String> extensions = ['png', 'jpg', 'jpeg', 'gif']; // Add other formats if needed
+      final List<String> extensions = ['png', 'jpg', 'jpeg', 'gif'];
       for (String ext in extensions) {
         final storageRef = FirebaseStorage.instance
             .ref()
             .child('user_images')
             .child('${user.uid}.$ext');
         try {
-          // Attempt to get the download URL
           final downloadUrl = await storageRef.getDownloadURL();
-
-          // If successful, return the download URL and stop further requests
           return downloadUrl;
         } catch (e) {
-          // Print error message, but continue to the next extension
           print(_selectedLanguage == 'Français'
               ? 'Erreur lors de l\'obtention de l\'URL de l\'image avec .$ext : $e'
               : 'Error getting image URL with .$ext: $e');
         }
       }
     }
-    return null; // Return null if none of the extensions work
+    return null;
   }
-
 }
