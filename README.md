@@ -1,8 +1,11 @@
 # E-Commerce App
 
 This e-commerce app was developed by **:**
+
 **$${\color{darkslateblue}Fady}  {\color{teal}Gerges}  {\color{olive}Kodsy}  {\color{cadetblue}Al}  {\color{darkseagreen}Sagheer}$$**
+
 **$${\color{darkslateblue}Kareem}  {\color{teal}Amr}  {\color{olive}Mahmoud}  {\color{cadetblue}Sultan}$$**
+
 **$${\color{darkslateblue}Abdulrahman}  {\color{teal}Elkhayat}$$**
 
 ## Table of Contents
