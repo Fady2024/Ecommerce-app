@@ -164,6 +164,7 @@
  <img src="https://github.com/Fady2024/Ecommerce-app/blob/main/App%20Photos/Dev.png" alt="Account Page" width="300"/>
  
  ## Technologies Used
+ - **Dart**: The used programming language.
  - **Flutter**: For building the app.
  - **Bloc State Management**: To manage app state.
  - **Firebase**: This is for backend services.
